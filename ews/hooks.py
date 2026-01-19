@@ -1,6 +1,6 @@
 app_name = "ews"
 app_title = "Ews"
-app_publisher = "tigris_solutions"
+app_publisher = "AbdullahSalih"
 app_description = "EWS"
 app_email = "abdullahalsalih@gmail.com"
 app_license = "mit"
