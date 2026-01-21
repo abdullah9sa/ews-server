@@ -1,20 +1,29 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:title",
  "creation": "2026-01-19 20:47:54.719868",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "is_active",
+  "province",
   "column_break_umym",
-  "version"
+  "is_active",
+  "version",
+  "section_break_iayu",
+  "ews_form_fields",
+  "roles_section",
+  "template_roles"
  ],
  "fields": [
   {
    "fieldname": "title",
    "fieldtype": "Data",
-   "label": "Title"
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1,
+   "unique": 1
   },
   {
    "default": "1",
@@ -27,18 +36,49 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "1",
    "fieldname": "version",
    "fieldtype": "Int",
    "label": "Version"
+  },
+  {
+   "fieldname": "section_break_iayu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "ews_form_fields",
+   "fieldtype": "Table",
+   "label": "EWS Form Fields",
+   "options": "EWS Form Fields"
+  },
+  {
+   "fieldname": "province",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Province",
+   "options": "Province",
+   "reqd": 1
+  },
+  {
+   "fieldname": "roles_section",
+   "fieldtype": "Section Break",
+   "label": "Roles"
+  },
+  {
+   "fieldname": "template_roles",
+   "fieldtype": "Table MultiSelect",
+   "label": "Template Roles",
+   "options": "Template Roles"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-19 20:49:17.122774",
+ "modified": "2026-01-19 21:02:52.296820",
  "modified_by": "Administrator",
  "module": "Ews",
  "name": "EWS Form Template",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

@@ -1,0 +1,66 @@
+[
+ {
+  "conflict_indicator": "Friction between Herders and Farmers over Pastures or Harvest Residue",
+  "docstatus": 0,
+  "doctype": "Conflict Indicators",
+  "modified": "2026-01-21 16:10:58.044680",
+  "name": "Friction between Herders and Farmers over Pastures or Harvest Residue",
+  "province": "Nineveh"
+ },
+ {
+  "conflict_indicator": "Road Blockage or Threat of Blockage due to Services or Climate",
+  "docstatus": 0,
+  "doctype": "Conflict Indicators",
+  "modified": "2026-01-21 16:10:55.269943",
+  "name": "Road Blockage or Threat of Blockage due to Services or Climate",
+  "province": "Nineveh"
+ },
+ {
+  "conflict_indicator": "Tension-Provoking Posts or Rumors about Water/Services on FB/WhatsApp",
+  "docstatus": 0,
+  "doctype": "Conflict Indicators",
+  "modified": "2026-01-21 16:10:51.580307",
+  "name": "Tension-Provoking Posts or Rumors about Water/Services on FB/WhatsApp",
+  "province": "Nineveh"
+ },
+ {
+  "conflict_indicator": "Conflict / tension over water supply distribution / tanker patrols",
+  "docstatus": 0,
+  "doctype": "Conflict Indicators",
+  "modified": "2026-01-21 16:12:16.249840",
+  "name": "Conflict / tension over water supply distribution / tanker patrols",
+  "province": "Basrah"
+ },
+ {
+  "conflict_indicator": "Rumors / incitement on social media about water / salinity / services",
+  "docstatus": 0,
+  "doctype": "Conflict Indicators",
+  "modified": "2026-01-21 16:12:26.222760",
+  "name": "Rumors / incitement on social media about water / salinity / services",
+  "province": "Basrah"
+ },
+ {
+  "conflict_indicator": "Clear Conflict over Water / Canal / Well / Irrigation Turns",
+  "docstatus": 0,
+  "doctype": "Conflict Indicators",
+  "modified": "2026-01-21 16:11:00.722746",
+  "name": "Clear Conflict over Water / Canal / Well / Irrigation Turns",
+  "province": "Nineveh"
+ },
+ {
+  "conflict_indicator": "Protests / tension due to deteriorating services (water / electricity / sewage)",
+  "docstatus": 0,
+  "doctype": "Conflict Indicators",
+  "modified": "2026-01-21 16:12:21.887562",
+  "name": "Protests / tension due to deteriorating services (water / electricity / sewage)",
+  "province": "Basrah"
+ },
+ {
+  "conflict_indicator": "Conflict over irrigation / canals / pumps between farmers",
+  "docstatus": 0,
+  "doctype": "Conflict Indicators",
+  "modified": "2026-01-21 16:12:30.370107",
+  "name": "Conflict over irrigation / canals / pumps between farmers",
+  "province": "Basrah"
+ }
+]

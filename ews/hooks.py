@@ -4,6 +4,33 @@ app_publisher = "AbdullahSalih"
 app_description = "EWS"
 app_email = "abdullahalsalih@gmail.com"
 app_license = "mit"
+# Fixtures
+fixtures = [
+    {
+        "dt": "Conflict Indicators",
+    },
+    {
+        "dt": "Climate Indicators",
+    },
+    {
+        "dt": "Conflict Sub-fields",
+    },
+    {
+        "dt": "Climate Indicators Subfields",
+    },
+    {
+        "dt": "District",
+    },
+    {
+        "dt": "Administrative Site",
+    },
+    {
+        "dt": "Province",
+    }
+]
+
+
+
 
 # Apps
 # ------------------

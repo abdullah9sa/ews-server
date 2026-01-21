@@ -1,0 +1,659 @@
+[
+ {
+  "climate_indicators": "Heatwave / Extreme Temperature Increase",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:40:24.154914",
+  "name": "Temp ge 44°C for 2 consecutive days",
+  "province": "Nineveh",
+  "standard": "Temp ge 44°C for 2 consecutive days"
+ },
+ {
+  "climate_indicators": "Heatwave / Extreme Temperature Increase",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:41:23.193097",
+  "name": "Temp ge 47°C for more than 3 hours",
+  "province": "Nineveh",
+  "standard": "Temp ge 47°C for more than 3 hours"
+ },
+ {
+  "climate_indicators": "Heatwave / Extreme Temperature Increase",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:41:32.778178",
+  "name": "Other value (specify in details)",
+  "province": "Nineveh",
+  "standard": "Other value (specify in details)"
+ },
+ {
+  "climate_indicators": "Heatwave / Extreme Temperature Increase",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:41:37.873239",
+  "name": "No digital reading available",
+  "province": "Nineveh",
+  "standard": "No digital reading available"
+ },
+ {
+  "climate_indicators": "Severe Cold Wave / Sharp Temperature Drop",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:41:52.096214",
+  "name": "Extreme drop causing clear suffering/disruption",
+  "province": "Nineveh",
+  "standard": "Extreme drop causing clear suffering/disruption"
+ },
+ {
+  "climate_indicators": "Severe Cold Wave / Sharp Temperature Drop",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:42:58.929400",
+  "name": "Other value (specify in details)01",
+  "province": "Nineveh",
+  "standard": "Other value (specify in details)"
+ },
+ {
+  "climate_indicators": "Severe Cold Wave / Sharp Temperature Drop",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:43:07.793272",
+  "name": "No digital reading available01",
+  "province": "Nineveh",
+  "standard": "No digital reading available"
+ },
+ {
+  "climate_indicators": "Strong Dust / Sand Storm",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:43:17.564531",
+  "name": "Very low visibility / clear traffic disruption01",
+  "province": "Nineveh",
+  "standard": "Very low visibility / clear traffic disruption"
+ },
+ {
+  "climate_indicators": "Strong Dust / Sand Storm",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:43:25.029972",
+  "name": "Health complaints / increased respiratory issues01",
+  "province": "Nineveh",
+  "standard": "Health complaints / increased respiratory issues"
+ },
+ {
+  "climate_indicators": "Strong Dust / Sand Storm",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:43:28.602702",
+  "name": "No digital reading available02",
+  "province": "Nineveh",
+  "standard": "No digital reading available"
+ },
+ {
+  "climate_indicators": "Sharp Interruption or Decline in Drinking Water",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:44:14.385357",
+  "name": "Interruption/Delay ge 24 hours01",
+  "province": "Nineveh",
+  "standard": "Interruption/Delay ge 24 hours"
+ },
+ {
+  "climate_indicators": "Sharp Interruption or Decline in Drinking Water",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:44:22.810301",
+  "name": "Interruption/Delay ge 48 hours01",
+  "province": "Nineveh",
+  "standard": "Interruption/Delay ge 48 hours"
+ },
+ {
+  "climate_indicators": "Sharp Interruption or Decline in Drinking Water",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:44:30.137447",
+  "name": "Interruption/Delay ge 72 hours01",
+  "province": "Nineveh",
+  "standard": "Interruption/Delay ge 72 hours"
+ },
+ {
+  "climate_indicators": "Sharp Interruption or Decline in Drinking Water",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:44:36.048261",
+  "name": "No accurate information available01",
+  "province": "Nineveh",
+  "standard": "No accurate information available"
+ },
+ {
+  "climate_indicators": "Clear Decline in Well / Spring Water Levels",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:44:47.651912",
+  "name": "Clear decline within a week/days01",
+  "province": "Nineveh",
+  "standard": "Clear decline within a week/days"
+ },
+ {
+  "climate_indicators": "Clear Decline in Well / Spring Water Levels",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:44:52.331189",
+  "name": "Well or spring dried up/stopped01",
+  "province": "Nineveh",
+  "standard": "Well or spring dried up/stopped"
+ },
+ {
+  "climate_indicators": "Clear Decline in Well / Spring Water Levels",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:44:56.680932",
+  "name": "No measurements available01",
+  "province": "Nineveh",
+  "standard": "No measurements available"
+ },
+ {
+  "climate_indicators": "Heavy Rain / Floods Threatening Homes or Roads",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:45:05.856134",
+  "name": "Direct threat to homes/schools/health center01",
+  "province": "Nineveh",
+  "standard": "Direct threat to homes/schools/health center"
+ },
+ {
+  "climate_indicators": "Heavy Rain / Floods Threatening Homes or Roads",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:45:09.819386",
+  "name": "Main road or bridge closed/disrupted01",
+  "province": "Nineveh",
+  "standard": "Main road or bridge closed/disrupted"
+ },
+ {
+  "climate_indicators": "Heavy Rain / Floods Threatening Homes or Roads",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:45:13.885681",
+  "name": "Widespread flooding of agricultural lands01",
+  "province": "Nineveh",
+  "standard": "Widespread flooding of agricultural lands"
+ },
+ {
+  "climate_indicators": "Heavy Rain / Floods Threatening Homes or Roads",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:45:17.180529",
+  "name": "No estimates available01",
+  "province": "Nineveh",
+  "standard": "No estimates available"
+ },
+ {
+  "climate_indicators": "Clear Damage to Crops, Pastures, or Date Palms",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:45:38.770424",
+  "name": "Apparent damage/production loss ge 25%01",
+  "province": "Nineveh",
+  "standard": "Apparent damage/production loss ge 25%"
+ },
+ {
+  "climate_indicators": "Clear Damage to Crops, Pastures, or Date Palms",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:45:46.849690",
+  "name": "Apparent damage/production loss ge 50%01",
+  "province": "Nineveh",
+  "standard": "Apparent damage/production loss ge 50%"
+ },
+ {
+  "climate_indicators": "Clear Damage to Crops, Pastures, or Date Palms",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:45:52.940249",
+  "name": "No numerical estimates available01",
+  "province": "Nineveh",
+  "standard": "No numerical estimates available"
+ },
+ {
+  "climate_indicators": "Significant Increase in Water Tanker Prices",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:46:09.117703",
+  "name": "Price increase ge 20% within days01",
+  "province": "Nineveh",
+  "standard": "Price increase ge 20% within days"
+ },
+ {
+  "climate_indicators": "Significant Increase in Water Tanker Prices",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:46:16.408631",
+  "name": "Price increase ge 50% within days01",
+  "province": "Nineveh",
+  "standard": "Price increase ge 50% within days"
+ },
+ {
+  "climate_indicators": "Significant Increase in Water Tanker Prices",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:46:21.377569",
+  "name": "No accurate figures available01",
+  "province": "Nineveh",
+  "standard": "No accurate figures available"
+ },
+ {
+  "climate_indicators": "Increase in Health Cases Related to Water/Heat/Dust",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:46:30.946695",
+  "name": "Noticeable increase within days01",
+  "province": "Nineveh",
+  "standard": "Noticeable increase within days"
+ },
+ {
+  "climate_indicators": "Increase in Health Cases Related to Water/Heat/Dust",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:46:34.374415",
+  "name": "Large/unusual increase01",
+  "province": "Nineveh",
+  "standard": "Large/unusual increase"
+ },
+ {
+  "climate_indicators": "Increase in Health Cases Related to Water/Heat/Dust",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:46:37.464013",
+  "name": "No figures available01",
+  "province": "Nineveh",
+  "standard": "No figures available"
+ },
+ {
+  "climate_indicators": "High Drinking Water Salinity / Shatt al-Arab (Salt Tide)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:56:08.651726",
+  "name": "TDS ge 2000 ppm or clear salty taste01",
+  "province": "Basrah",
+  "standard": "TDS ge 2000 ppm or clear salty taste"
+ },
+ {
+  "climate_indicators": "High Drinking Water Salinity / Shatt al-Arab (Salt Tide)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:56:16.733998",
+  "name": "TDS ge 5000 ppm (Practically undrinkable)01",
+  "province": "Basrah",
+  "standard": "TDS ge 5000 ppm (Practically undrinkable)"
+ },
+ {
+  "climate_indicators": "High Drinking Water Salinity / Shatt al-Arab (Salt Tide)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:56:21.476905",
+  "name": "Multiple complaints within 24 hours01",
+  "province": "Basrah",
+  "standard": "Multiple complaints within 24 hours"
+ },
+ {
+  "climate_indicators": "High Drinking Water Salinity / Shatt al-Arab (Salt Tide)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:56:26.468856",
+  "name": "No digital reading available03",
+  "province": "Basrah",
+  "standard": "No digital reading available"
+ },
+ {
+  "climate_indicators": "Deterioration of Drinking Water Quality (Taste/Color/Odor/Turbidity)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:56:43.903104",
+  "name": "Severe color change/turbidity01",
+  "province": "Basrah",
+  "standard": "Severe color change/turbidity"
+ },
+ {
+  "climate_indicators": "Deterioration of Drinking Water Quality (Taste/Color/Odor/Turbidity)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:56:49.355610",
+  "name": "Clear abnormal odor/taste01",
+  "province": "Basrah",
+  "standard": "Clear abnormal odor/taste"
+ },
+ {
+  "climate_indicators": "Deterioration of Drinking Water Quality (Taste/Color/Odor/Turbidity)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:56:52.979113",
+  "name": "Coinciding with water-related illnesses01",
+  "province": "Basrah",
+  "standard": "Coinciding with water-related illnesses"
+ },
+ {
+  "climate_indicators": "Deterioration of Drinking Water Quality (Taste/Color/Odor/Turbidity)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 15:56:57.797913",
+  "name": "No accurate information01",
+  "province": "Basrah",
+  "standard": "No accurate information"
+ },
+ {
+  "climate_indicators": "Water Supply Interruption / Low Pressure",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:01:25.175514",
+  "name": "Weakness/Cut $\\ge$ 12 hours01",
+  "province": "Basrah",
+  "standard": "Weakness/Cut ge 12 hours"
+ },
+ {
+  "climate_indicators": "Water Supply Interruption / Low Pressure",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:01:31.698242",
+  "name": "Weakness/Cut ge 24 hours01",
+  "province": "Basrah",
+  "standard": "Weakness/Cut ge 24 hours"
+ },
+ {
+  "climate_indicators": "Water Supply Interruption / Low Pressure",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:01:39.581779",
+  "name": "Weakness/Cut $\\ge$ 48 hours01",
+  "province": "Basrah",
+  "standard": "Weakness/Cut ge 48 hours"
+ },
+ {
+  "climate_indicators": "Sewage Overflow / Mixing with Rainwater or Canals",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:01:59.360795",
+  "name": "Overflow in streets with strong odors01",
+  "province": "Basrah",
+  "standard": "Overflow in streets with strong odors"
+ },
+ {
+  "climate_indicators": "Sewage Overflow / Mixing with Rainwater or Canals",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:02:02.915776",
+  "name": "Mixing with rainwater/irrigation canals01",
+  "province": "Basrah",
+  "standard": "Mixing with rainwater/irrigation canals"
+ },
+ {
+  "climate_indicators": "Sewage Overflow / Mixing with Rainwater or Canals",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:02:08.144809",
+  "name": "Proximity to sensitive sites (School/Clinic)01",
+  "province": "Basrah",
+  "standard": "Proximity to sensitive sites (School/Clinic)"
+ },
+ {
+  "climate_indicators": "Fish Kill / Water Pollution in Shatt al-Arab/Rivers/Marshes",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:02:17.455378",
+  "name": "Limited die-off (One site/small amount)01",
+  "province": "Basrah",
+  "standard": "Limited die-off (One site/small amount)"
+ },
+ {
+  "climate_indicators": "Fish Kill / Water Pollution in Shatt al-Arab/Rivers/Marshes",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:02:21.849836",
+  "name": "Widespread die-off (Multiple sites)01",
+  "province": "Basrah",
+  "standard": "Widespread die-off (Multiple sites)"
+ },
+ {
+  "climate_indicators": "Fish Kill / Water Pollution in Shatt al-Arab/Rivers/Marshes",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:02:26.203562",
+  "name": "Clear chemical/oil/pollution odor01",
+  "province": "Basrah",
+  "standard": "Clear chemical/oil/pollution odor"
+ },
+ {
+  "climate_indicators": "Deterioration of Date Palms or Orchards (Salinity/Drought/Pests)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:02:46.492399",
+  "name": "Visible damage to ge 10% of orchard01",
+  "province": "Basrah",
+  "standard": "Visible damage to ge 10% of orchard"
+ },
+ {
+  "climate_indicators": "Deterioration of Date Palms or Orchards (Salinity/Drought/Pests)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:02:51.046912",
+  "name": "Significant damage to $\\ge$ 30% of orchard01",
+  "province": "Basrah",
+  "standard": "Significant damage to $\\ge$ 30% of orchard"
+ },
+ {
+  "climate_indicators": "Deterioration of Date Palms or Orchards (Salinity/Drought/Pests)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:02:55.772634",
+  "name": "Increasing pest/insect appearance01",
+  "province": "Basrah",
+  "standard": "Increasing pest/insect appearance"
+ },
+ {
+  "climate_indicators": "Heat Stress due to High Temperature + High Humidity",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:03:21.214521",
+  "name": "Temp ge 45° with high humidity01",
+  "province": "Basrah",
+  "standard": "Temp ge 45° with high humidity"
+ },
+ {
+  "climate_indicators": "Heat Stress due to High Temperature + High Humidity",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:03:25.215821",
+  "name": "Increased fainting/heatstroke cases01",
+  "province": "Basrah",
+  "standard": "Increased fainting/heatstroke cases"
+ },
+ {
+  "climate_indicators": "Heat Stress due to High Temperature + High Humidity",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:03:29.495330",
+  "name": "Disruption of work/schools/movement01",
+  "province": "Basrah",
+  "standard": "Disruption of work/schools/movement"
+ },
+ {
+  "climate_indicators": "Power Outage Affecting Water Pumping/Cooling/Services",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:03:45.077667",
+  "name": "Cut $\\ge$ 6 hrs (Impact on water/cooling)01",
+  "province": "Basrah",
+  "standard": "Cut ge 6 hrs (Impact on water/cooling)"
+ },
+ {
+  "climate_indicators": "Power Outage Affecting Water Pumping/Cooling/Services",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:03:54.369403",
+  "name": "Cut ge 12 hrs01",
+  "province": "Basrah",
+  "standard": "Cut ge 12 hrs"
+ },
+ {
+  "climate_indicators": "Power Outage Affecting Water Pumping/Cooling/Services",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:03:58.502388",
+  "name": "Pump/station stoppage due to power01",
+  "province": "Basrah",
+  "standard": "Pump/station stoppage due to power"
+ },
+ {
+  "climate_indicators": "Flooding / Street Submergence (Rain or High Tide)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:04:27.507545",
+  "name": "Street flooding/Main road disruption01",
+  "province": "Basrah",
+  "standard": "Street flooding/Main road disruption"
+ },
+ {
+  "climate_indicators": "Flooding / Street Submergence (Rain or High Tide)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:04:35.242342",
+  "name": "Water entering homes/schools01",
+  "province": "Basrah",
+  "standard": "Water entering homes/schools"
+ },
+ {
+  "climate_indicators": "Flooding / Street Submergence (Rain or High Tide)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:04:38.883391",
+  "name": "Tide/level rise flooding low-lying areas01",
+  "province": "Basrah",
+  "standard": "Tide/level rise flooding low-lying areas"
+ },
+ {
+  "climate_indicators": "Increase in Water/Heat-related Health Cases (Diarrhea/Skin/Fainting)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:05:12.215041",
+  "name": "Noticeable increase within 3 days01",
+  "province": "Basrah",
+  "standard": "Noticeable increase within 3 days"
+ },
+ {
+  "climate_indicators": "Increase in Water/Heat-related Health Cases (Diarrhea/Skin/Fainting)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:05:18.169967",
+  "name": "Major/unusual increase within a week01",
+  "province": "Basrah",
+  "standard": "Major/unusual increase within a week"
+ },
+ {
+  "climate_indicators": "Increase in Water/Heat-related Health Cases (Diarrhea/Skin/Fainting)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:05:22.473786",
+  "name": "Cases clustered in one neighborhood01",
+  "province": "Basrah",
+  "standard": "Cases clustered in one neighborhood"
+ },
+ {
+  "climate_indicators": "Significant Increase in Water Tanker / Bottled Water Prices",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:05:46.322843",
+  "name": "Price increase ge 20% within days02",
+  "province": "Basrah",
+  "standard": "Price increase ge 20% within days"
+ },
+ {
+  "climate_indicators": "Significant Increase in Water Tanker / Bottled Water Prices",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:05:53.824089",
+  "name": "Price increase ge 50% within days02",
+  "province": "Basrah",
+  "standard": "Price increase ge 50% within days"
+ },
+ {
+  "climate_indicators": "Significant Increase in Water Tanker / Bottled Water Prices",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:05:58.508770",
+  "name": "Scarcity of tankers/bottled water01",
+  "province": "Basrah",
+  "standard": "Scarcity of tankers/bottled water"
+ },
+ {
+  "climate_indicators": "Significant Increase in Water Tanker / Bottled Water Prices",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:17:52.724624",
+  "name": "No accurate information02",
+  "province": "Basrah",
+  "standard": "No accurate information"
+ },
+ {
+  "climate_indicators": "Increase in Water/Heat-related Health Cases (Diarrhea/Skin/Fainting)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:17:59.180963",
+  "name": "No accurate information03",
+  "province": "Basrah",
+  "standard": "No accurate information"
+ },
+ {
+  "climate_indicators": "Flooding / Street Submergence (Rain or High Tide)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:18:04.132860",
+  "name": "No accurate information04",
+  "province": "Basrah",
+  "standard": "No accurate information"
+ },
+ {
+  "climate_indicators": "Fish Kill / Water Pollution in Shatt al-Arab/Rivers/Marshes",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:18:22.463951",
+  "name": "No accurate information05",
+  "province": "Basrah",
+  "standard": "No accurate information"
+ },
+ {
+  "climate_indicators": "Heat Stress due to High Temperature + High Humidity",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:18:37.104008",
+  "name": "No accurate information06",
+  "province": "Basrah",
+  "standard": "No accurate information"
+ },
+ {
+  "climate_indicators": "Power Outage Affecting Water Pumping/Cooling/Services",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:18:55.482054",
+  "name": "No accurate information07",
+  "province": "Basrah",
+  "standard": "No accurate information"
+ },
+ {
+  "climate_indicators": "Sewage Overflow / Mixing with Rainwater or Canals",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:19:03.767140",
+  "name": "No accurate information08",
+  "province": "Basrah",
+  "standard": "No accurate information"
+ },
+ {
+  "climate_indicators": "Water Supply Interruption / Low Pressure",
+  "docstatus": 0,
+  "doctype": "Climate Indicators Subfields",
+  "modified": "2026-01-21 16:19:12.530005",
+  "name": "No accurate information09",
+  "province": "Basrah",
+  "standard": "No accurate information"
+ }
+]

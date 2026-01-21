@@ -1,0 +1,34 @@
+[
+ {
+  "administrative_site": "Abu Al-Khaseeb",
+  "docstatus": 0,
+  "doctype": "Administrative Site",
+  "modified": "2026-01-21 15:29:46.612705",
+  "name": "Abu Al-Khaseeb",
+  "province": "Basrah"
+ },
+ {
+  "administrative_site": "Al-Midaina",
+  "docstatus": 0,
+  "doctype": "Administrative Site",
+  "modified": "2026-01-21 15:33:49.184137",
+  "name": "Al-Midaina",
+  "province": "Basrah"
+ },
+ {
+  "administrative_site": "Al-Ba'aj",
+  "docstatus": 0,
+  "doctype": "Administrative Site",
+  "modified": "2026-01-21 15:34:11.627827",
+  "name": "Al-Ba'aj",
+  "province": "Nineveh"
+ },
+ {
+  "administrative_site": "Tel Abta",
+  "docstatus": 0,
+  "doctype": "Administrative Site",
+  "modified": "2026-01-21 15:34:38.883963",
+  "name": "Tel Abta",
+  "province": "Nineveh"
+ }
+]

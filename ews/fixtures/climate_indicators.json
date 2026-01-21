@@ -1,0 +1,170 @@
+[
+ {
+  "climate_indicator": "Severe Cold Wave / Sharp Temperature Drop",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:51:05.648663",
+  "name": "Severe Cold Wave / Sharp Temperature Drop",
+  "province": "Nineveh"
+ },
+ {
+  "climate_indicator": "Strong Dust / Sand Storm",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:51:02.143703",
+  "name": "Strong Dust / Sand Storm",
+  "province": "Nineveh"
+ },
+ {
+  "climate_indicator": "Clear Decline in Well / Spring Water Levels",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:50:54.954798",
+  "name": "Clear Decline in Well / Spring Water Levels",
+  "province": "Nineveh"
+ },
+ {
+  "climate_indicator": "Heavy Rain / Floods Threatening Homes or Roads",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:50:50.681035",
+  "name": "Heavy Rain / Floods Threatening Homes or Roads",
+  "province": "Nineveh"
+ },
+ {
+  "climate_indicator": "Clear Damage to Crops, Pastures, or Date Palms",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:50:47.109244",
+  "name": "Clear Damage to Crops, Pastures, or Date Palms",
+  "province": "Nineveh"
+ },
+ {
+  "climate_indicator": "Significant Increase in Water Tanker Prices",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:50:43.307400",
+  "name": "Significant Increase in Water Tanker Prices",
+  "province": "Nineveh"
+ },
+ {
+  "climate_indicator": "High Drinking Water Salinity / Shatt al-Arab (Salt Tide)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:51:28.124674",
+  "name": "High Drinking Water Salinity / Shatt al-Arab (Salt Tide)",
+  "province": "Basrah"
+ },
+ {
+  "climate_indicator": "Deterioration of Drinking Water Quality (Taste/Color/Odor/Turbidity)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:52:04.148502",
+  "name": "Deterioration of Drinking Water Quality (Taste/Color/Odor/Turbidity)",
+  "province": "Basrah"
+ },
+ {
+  "climate_indicator": "Sewage Overflow / Mixing with Rainwater or Canals",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:52:23.608236",
+  "name": "Sewage Overflow / Mixing with Rainwater or Canals",
+  "province": "Basrah"
+ },
+ {
+  "climate_indicator": "Deterioration of Date Palms or Orchards (Salinity/Drought/Pests)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:52:32.010594",
+  "name": "Deterioration of Date Palms or Orchards (Salinity/Drought/Pests)",
+  "province": "Basrah"
+ },
+ {
+  "climate_indicator": "Heat Stress due to High Temperature + High Humidity",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:52:36.278006",
+  "name": "Heat Stress due to High Temperature + High Humidity",
+  "province": "Basrah"
+ },
+ {
+  "climate_indicator": "Power Outage Affecting Water Pumping/Cooling/Services",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:52:41.081812",
+  "name": "Power Outage Affecting Water Pumping/Cooling/Services",
+  "province": "Basrah"
+ },
+ {
+  "climate_indicator": "Flooding / Street Submergence (Rain or High Tide)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:52:45.005415",
+  "name": "Flooding / Street Submergence (Rain or High Tide)",
+  "province": "Basrah"
+ },
+ {
+  "climate_indicator": "Increase in Water/Heat-related Health Cases (Diarrhea/Skin/Fainting)",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:52:49.238377",
+  "name": "Increase in Water/Heat-related Health Cases (Diarrhea/Skin/Fainting)",
+  "province": "Basrah"
+ },
+ {
+  "climate_indicator": "Significant Increase in Water Tanker / Bottled Water Prices",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:52:53.180519",
+  "name": "Significant Increase in Water Tanker / Bottled Water Prices",
+  "province": "Basrah"
+ },
+ {
+  "climate_indicator": "Irrigation Water Shortage / Soil Salinity Affecting Crops",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:52:56.703980",
+  "name": "Irrigation Water Shortage / Soil Salinity Affecting Crops",
+  "province": "Basrah"
+ },
+ {
+  "climate_indicator": "Heatwave / Extreme Temperature Increase",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:51:09.782799",
+  "name": "Heatwave / Extreme Temperature Increase",
+  "province": "Nineveh"
+ },
+ {
+  "climate_indicator": "Sharp Interruption or Decline in Drinking Water",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:50:58.758779",
+  "name": "Sharp Interruption or Decline in Drinking Water",
+  "province": "Nineveh"
+ },
+ {
+  "climate_indicator": "Increase in Health Cases Related to Water/Heat/Dust",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:50:39.480260",
+  "name": "Increase in Health Cases Related to Water/Heat/Dust",
+  "province": "Nineveh"
+ },
+ {
+  "climate_indicator": "Water Supply Interruption / Low Pressure",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:52:08.522641",
+  "name": "Water Supply Interruption / Low Pressure",
+  "province": "Basrah"
+ },
+ {
+  "climate_indicator": "Fish Kill / Water Pollution in Shatt al-Arab/Rivers/Marshes",
+  "docstatus": 0,
+  "doctype": "Climate Indicators",
+  "modified": "2026-01-21 15:52:27.667155",
+  "name": "Fish Kill / Water Pollution in Shatt al-Arab/Rivers/Marshes",
+  "province": "Basrah"
+ }
+]

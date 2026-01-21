@@ -1,0 +1,228 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "OBS.-.province.-.#####",
+ "creation": "2026-01-19 21:03:24.705916",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "observer",
+  "column_break_jmsk",
+  "timestamp",
+  "location_info_section",
+  "c",
+  "administrative_site",
+  "district",
+  "altitude",
+  "accuracy",
+  "column_break_uncg",
+  "location",
+  "section_break_enik",
+  "report_type",
+  "climate_indicators",
+  "standard",
+  "conflict_indicators",
+  "conflict_threshold",
+  "column_break_hqjj",
+  "extra_details",
+  "section_break_dolf",
+  "severity",
+  "report_timing",
+  "column_break_npvh",
+  "incident_extra_details",
+  "files_section",
+  "image",
+  "image_2",
+  "column_break_mhma",
+  "audio"
+ ],
+ "fields": [
+  {
+   "fieldname": "observer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Observer",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "timestamp",
+   "fieldtype": "Datetime",
+   "label": "Timestamp"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Geolocation",
+   "label": "Location"
+  },
+  {
+   "fieldname": "administrative_site",
+   "fieldtype": "Link",
+   "label": "Administrative Site",
+   "options": "Administrative Site"
+  },
+  {
+   "fieldname": "column_break_jmsk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "location_info_section",
+   "fieldtype": "Section Break",
+   "label": "Location Info"
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Link",
+   "label": "District",
+   "options": "District"
+  },
+  {
+   "fieldname": "column_break_uncg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_dolf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "severity",
+   "fieldtype": "Select",
+   "label": "Severity",
+   "options": "Low\nModerate\nHigh\nCritical",
+   "translatable": 1
+  },
+  {
+   "fieldname": "report_timing",
+   "fieldtype": "Select",
+   "label": "Report Timing",
+   "options": "Ongoing / Current Incident\nExpected / Forecasted",
+   "translatable": 1
+  },
+  {
+   "fieldname": "section_break_enik",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "report_type",
+   "fieldtype": "Select",
+   "label": "Report Type",
+   "options": "Climate / Water / Environment\nConflict / Social Tension"
+  },
+  {
+   "depends_on": "eval:(doc.report_type == \"Climate / Water / Environment\" )",
+   "fieldname": "climate_indicators",
+   "fieldtype": "Link",
+   "label": "Climate Indicators",
+   "mandatory_depends_on": "eval:(doc.report_type == \"Climate / Water / Environment\" )",
+   "options": "Climate Indicators"
+  },
+  {
+   "depends_on": "eval:(doc.report_type == \"Conflict / Social Tension\" )",
+   "fieldname": "conflict_indicators",
+   "fieldtype": "Link",
+   "label": "Conflict Indicators",
+   "mandatory_depends_on": "eval:(doc.report_type == \"Conflict / Social Tension\" )",
+   "options": "Conflict Indicators"
+  },
+  {
+   "fieldname": "extra_details",
+   "fieldtype": "Text",
+   "label": "Extra Details"
+  },
+  {
+   "fieldname": "column_break_npvh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "incident_extra_details",
+   "fieldtype": "Text",
+   "label": "Incident Extra Details"
+  },
+  {
+   "depends_on": "eval:(doc.report_type == \"Climate / Water / Environment\" )",
+   "fieldname": "standard",
+   "fieldtype": "Link",
+   "label": "Climate Standard",
+   "options": "Climate Indicators Subfields"
+  },
+  {
+   "depends_on": "eval:(doc.report_type == \"Conflict / Social Tension\" )",
+   "fieldname": "conflict_threshold",
+   "fieldtype": "Link",
+   "label": "Conflict Threshold",
+   "options": "Conflict Sub-fields"
+  },
+  {
+   "fieldname": "c",
+   "fieldtype": "Link",
+   "label": "Province",
+   "options": "Province"
+  },
+  {
+   "fieldname": "altitude",
+   "fieldtype": "Float",
+   "label": "Altitude"
+  },
+  {
+   "fieldname": "accuracy",
+   "fieldtype": "Float",
+   "label": "Accuracy"
+  },
+  {
+   "fieldname": "column_break_hqjj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "files_section",
+   "fieldtype": "Section Break",
+   "label": "Files"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
+  },
+  {
+   "fieldname": "image_2",
+   "fieldtype": "Attach Image",
+   "label": "Image 2"
+  },
+  {
+   "fieldname": "column_break_mhma",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "audio",
+   "fieldtype": "Attach",
+   "label": "Audio"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-21 15:33:02.194466",
+ "modified_by": "Administrator",
+ "module": "Ews",
+ "name": "EWS Report",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

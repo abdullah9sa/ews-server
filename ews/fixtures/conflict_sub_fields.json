@@ -1,0 +1,194 @@
+[
+ {
+  "conflict_indicators": "Clear Conflict over Water / Canal / Well / Irrigation Turns",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:47:10.186089",
+  "name": "Clear verbal altercation/threats",
+  "threshold": "Clear verbal altercation/threats"
+ },
+ {
+  "conflict_indicators": "Clear Conflict over Water / Canal / Well / Irrigation Turns",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:47:14.889599",
+  "name": "Fight/violence or serious threat",
+  "threshold": "Fight/violence or serious threat"
+ },
+ {
+  "conflict_indicators": "Clear Conflict over Water / Canal / Well / Irrigation Turns",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:47:21.330405",
+  "name": "Preventing water access/closing canal/forceful control",
+  "threshold": "Preventing water access/closing canal/forceful control"
+ },
+ {
+  "conflict_indicators": "Friction between Herders and Farmers over Pastures or Harvest Residue",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:47:31.558543",
+  "name": "Single incident (containable)",
+  "threshold": "Single incident (containable)"
+ },
+ {
+  "conflict_indicators": "Friction between Herders and Farmers over Pastures or Harvest Residue",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:47:36.304462",
+  "name": "Repeated incidents within a week",
+  "threshold": "Repeated incidents within a week"
+ },
+ {
+  "conflict_indicators": "Friction between Herders and Farmers over Pastures or Harvest Residue",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:47:39.915908",
+  "name": "Escalation / serious threats",
+  "threshold": "Escalation / serious threats"
+ },
+ {
+  "conflict_indicators": "Road Blockage or Threat of Blockage due to Services or Climate",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:47:51.317459",
+  "name": "Serious threat of road blockage",
+  "threshold": "Serious threat of road blockage"
+ },
+ {
+  "conflict_indicators": "Road Blockage or Threat of Blockage due to Services or Climate",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:47:55.393965",
+  "name": "Actual road blockage/closure",
+  "threshold": "Actual road blockage/closure"
+ },
+ {
+  "conflict_indicators": "Road Blockage or Threat of Blockage due to Services or Climate",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:48:00.610306",
+  "name": "Tension/violence during the blockage",
+  "threshold": "Tension/violence during the blockage"
+ },
+ {
+  "conflict_indicators": "Tension-Provoking Posts or Rumors about Water/Services on FB/WhatsApp",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:48:09.961362",
+  "name": "Few but sharp/influential posts",
+  "threshold": "Few but sharp/influential posts"
+ },
+ {
+  "conflict_indicators": "Tension-Provoking Posts or Rumors about Water/Services on FB/WhatsApp",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:48:15.317931",
+  "name": "Widespread circulation / repeated messages",
+  "threshold": "Widespread circulation / repeated messages"
+ },
+ {
+  "conflict_indicators": "Tension-Provoking Posts or Rumors about Water/Services on FB/WhatsApp",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 15:48:21.257529",
+  "name": "Direct incitement / calls for escalation",
+  "threshold": "Direct incitement / calls for escalation"
+ },
+ {
+  "conflict_indicators": "Conflict / tension over water supply distribution / tanker patrols",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:12:53.363583",
+  "name": "Verbal altercation / threats over water",
+  "threshold": "Verbal altercation / threats over water"
+ },
+ {
+  "conflict_indicators": "Conflict / tension over water supply distribution / tanker patrols",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:13:02.032558",
+  "name": "Fight / violence or serious threat",
+  "threshold": "Fight / violence or serious threat"
+ },
+ {
+  "conflict_indicators": "Conflict / tension over water supply distribution / tanker patrols",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:13:06.010473",
+  "name": "Preventing water access / forceful control",
+  "threshold": "Preventing water access / forceful control"
+ },
+ {
+  "conflict_indicators": "Protests / tension due to deteriorating services (water / electricity / sewage)",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:13:12.685629",
+  "name": "Peaceful gathering / chanting",
+  "threshold": "Peaceful gathering / chanting"
+ },
+ {
+  "conflict_indicators": "Protests / tension due to deteriorating services (water / electricity / sewage)",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:13:17.333557",
+  "name": "Road blockage / service disruption",
+  "threshold": "Road blockage / service disruption"
+ },
+ {
+  "conflict_indicators": "Protests / tension due to deteriorating services (water / electricity / sewage)",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:13:21.523214",
+  "name": "Tension / violence / sabotage",
+  "threshold": "Tension / violence / sabotage"
+ },
+ {
+  "conflict_indicators": "Rumors / incitement on social media about water / salinity / services",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:13:34.200301",
+  "name": "Few but sharp / influential posts",
+  "threshold": "Few but sharp / influential posts"
+ },
+ {
+  "conflict_indicators": "Rumors / incitement on social media about water / salinity / services",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:14:08.534441",
+  "name": "Widespread circulation / repeated messages01",
+  "threshold": "Widespread circulation / repeated messages"
+ },
+ {
+  "conflict_indicators": "Rumors / incitement on social media about water / salinity / services",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:14:12.862682",
+  "name": "Direct incitement / calls for escalation01",
+  "threshold": "Direct incitement / calls for escalation"
+ },
+ {
+  "conflict_indicators": "Conflict over irrigation / canals / pumps between farmers",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:14:22.909248",
+  "name": "Single incident (containable)01",
+  "threshold": "Single incident (containable)"
+ },
+ {
+  "conflict_indicators": "Conflict over irrigation / canals / pumps between farmers",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:14:28.584990",
+  "name": "Repeated conflicts within a week01",
+  "threshold": "Repeated conflicts within a week"
+ },
+ {
+  "conflict_indicators": "Conflict over irrigation / canals / pumps between farmers",
+  "docstatus": 0,
+  "doctype": "Conflict Sub-fields",
+  "modified": "2026-01-21 16:14:33.461830",
+  "name": "Escalation / serious threats01",
+  "threshold": "Escalation / serious threats"
+ }
+]
