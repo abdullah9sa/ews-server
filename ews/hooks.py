@@ -26,6 +26,9 @@ fixtures = [
     },
     {
         "dt": "Province",
+    },
+    {
+        "dt": "Translation",
     }
 ]
 
