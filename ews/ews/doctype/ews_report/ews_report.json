@@ -6,17 +6,18 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "tab1_tab",
   "observer",
-  "column_break_jmsk",
   "timestamp",
-  "location_info_section",
   "c",
   "administrative_site",
+  "column_break_jmsk",
   "district",
   "altitude",
   "accuracy",
   "column_break_uncg",
   "location",
+  "tab2_tab",
   "section_break_enik",
   "report_type",
   "climate_indicators",
@@ -25,6 +26,7 @@
   "conflict_threshold",
   "column_break_hqjj",
   "extra_details",
+  "details_tab",
   "section_break_dolf",
   "severity",
   "report_timing",
@@ -64,11 +66,6 @@
   {
    "fieldname": "column_break_jmsk",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "location_info_section",
-   "fieldtype": "Section Break",
-   "label": "Location Info"
   },
   {
    "fieldname": "district",
@@ -195,12 +192,27 @@
    "fieldname": "audio",
    "fieldtype": "Attach",
    "label": "Audio"
+  },
+  {
+   "fieldname": "tab1_tab",
+   "fieldtype": "Tab Break",
+   "label": "Tab1"
+  },
+  {
+   "fieldname": "tab2_tab",
+   "fieldtype": "Tab Break",
+   "label": "Tab2"
+  },
+  {
+   "fieldname": "details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-21 15:33:02.194466",
+ "modified": "2026-01-24 12:59:38.847718",
  "modified_by": "Administrator",
  "module": "Ews",
  "name": "EWS Report",

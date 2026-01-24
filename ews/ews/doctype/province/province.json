@@ -7,7 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "province",
-  "province_name_arabic"
+  "province_name_arabic",
+  "role"
  ],
  "fields": [
   {
@@ -20,12 +21,18 @@
    "fieldname": "province_name_arabic",
    "fieldtype": "Data",
    "label": "Province Name Arabic"
+  },
+  {
+   "fieldname": "role",
+   "fieldtype": "Link",
+   "label": "Role",
+   "options": "Role"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-21 14:59:17.100958",
+ "modified": "2026-01-24 12:58:50.822222",
  "modified_by": "Administrator",
  "module": "Ews",
  "name": "Province",
