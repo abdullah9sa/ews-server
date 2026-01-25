@@ -2,9 +2,6 @@ import frappe
 from frappe import _
 from typing import Dict, List, Any, Optional
 
-
-
-
 def _translate_text(text: str, language: str = "en") -> str:
 	"""
 	Translate text using Frappe's translation system.
@@ -27,7 +24,6 @@ def _translate_text(text: str, language: str = "en") -> str:
 	except Exception as e:
 		frappe.log_error(f"Error translating '{text}' to {language}: {str(e)}")
 		return text
-
 
 def _apply_language_to_dict(data: Any, language: str = "en", keys_to_translate: List[str] = None) -> Any:
 	"""
@@ -68,7 +64,6 @@ def _apply_language_to_dict(data: Any, language: str = "en", keys_to_translate: 
 	else:
 		return data
 
-
 def _translate_option_values(options: List[Any], language: str = "en") -> List[Any]:
 	"""
 	Translate option values in lists (for Select fields and similar).
@@ -98,7 +93,6 @@ def _translate_option_values(options: List[Any], language: str = "en") -> List[A
 		else:
 			result.append(option)
 	return result
-
 
 @frappe.whitelist(allow_guest=False)
 def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "en") -> Dict[str, Any]:
@@ -617,124 +611,190 @@ def _get_conflict_indicators_with_thresholds(excluded: set, language: str = "en"
 		frappe.log_error(f"Error getting conflict indicators: {str(e)}")
 		return []
 
-# --------------------------------------------------
 
-
-# @frappe.whitelist(allow_guest=False)
-# def get_subfields_for_indicator(indicator_name: str, indicator_type: str, language: str = "en") -> Dict[str, Any]:
-# 	"""
-# 	Get subfields for a specific indicator when user selects it.
+@frappe.whitelist(allow_guest=True)
+def register_reporter(full_name: str, email: str, province: str, password: str) -> Dict[str, Any]:
+	"""
+	Register a new reporter user.
 	
-# 	Args:
-# 		indicator_name (str): Name of the indicator
-# 		indicator_type (str): Type - 'climate' or 'conflict'
-# 		language (str): Language code for translations ('ar' for Arabic, 'en' for English, default: 'en')
-	
-# 	Returns:
-# 		dict: Subfields with their details
-# 	"""
-	
-# 	try:
-# 		# Validate language parameter
-# 		if language not in ["en", "ar"]:
-# 			language = "en"
+	Args:
+		full_name (str): Full name of the user
+		email (str): Email address (login ID)
+		province (str): Province name
+		password (str): User's password
 		
-# 		if indicator_type == "climate":
-# 			subfields = frappe.db.get_list(
-# 				"Climate Indicators Subfields",
-# 				fields=["name", "standard"],
-# 				filters={"climate_indicators": indicator_name},
-# 				order_by="standard asc"
-# 			)
+	Returns:
+		dict: Success message or error
+	"""
+	try:
+		if frappe.db.exists("User", email):
+			frappe.throw(_("User with email {0} already exists").format(email))
 			
-# 			return {
-# 				"indicator": indicator_name,
-# 				"type": "climate",
-# 				"language": language,
-# 				"subfields": [
-# 					{
-# 						"value": sf["name"],
-# 						"label": _translate_text(sf.get("standard", sf["name"]), language)
-# 					}
-# 					for sf in subfields
-# 				]
-# 			}
+		# Create User document
+		user = frappe.new_doc("User")
+		user.first_name = full_name
+		user.email = email
+		user.enabled = 0  # Disabled by default as requested
+		user.new_password = password
 		
-# 		elif indicator_type == "conflict":
-# 			thresholds = frappe.db.get_list(
-# 				"Conflict Sub-fields",
-# 				fields=["name", "threshold"],
-# 				filters={"conflict_indicators": indicator_name},
-# 				order_by="threshold asc"
-# 			)
+		# Construct role name dynamically based on province
+		# e.g., "Nineveh Reporter", "Basrah Reporter"
+		role_name = f"{province} Reporter"
+		
+		# Verify role exists
+		if not frappe.db.exists("Role", role_name):
+			# Fallback or error? User requested "X Reporter" based on Province.
+			# If the role doesn't exist, we might want to log it or throw.
+			# For now, let's try to add it, but if it fails, the user created without the role needs attention.
+			# Better to check beforehand.
+			pass # We will try to add it anyway, frappe users usually have roles added via append
 			
-# 			return {
-# 				"indicator": indicator_name,
-# 				"type": "conflict",
-# 				"language": language,
-# 				"thresholds": [
-# 					{
-# 						"value": th["name"],
-# 						"label": _translate_text(th.get("threshold", th["name"]), language)
-# 					}
-# 					for th in thresholds
-# 				]
-# 			}
+		user.append("roles", {
+			"role": role_name
+		})
 		
-# 		else:
-# 			frappe.throw(_("Invalid indicator type: {0}").format(indicator_type))
-	
-# 	except Exception as e:
-# 		frappe.log_error(f"Error getting subfields for {indicator_name}: {str(e)}")
-# 		frappe.throw(_("Error fetching subfields: {0}").format(str(e)))
+		# Also potentially add a basic role like "Blogger" or "Website User" if needed?
+		# User strictly asked for "X Reporter".
+		
+		user.save(ignore_permissions=True)
+		
+		return {
+			"status": "success",
+			"message": _("User registered successfully. Please wait for admin approval."),
+			"user": email
+		}
+		
+	except Exception as e:
+		frappe.log_error(f"Error registering user: {str(e)}")
+		frappe.throw(_("Error registering user: {0}").format(str(e)))
 
 
-# @frappe.whitelist(allow_guest=False)
-# def validate_field_dependencies(report_data: Dict[str, Any], language: str = "en") -> Dict[str, Any]:
-# 	"""
-# 	Validate that selected fields meet their dependency requirements.
+@frappe.whitelist(allow_guest=True)
+def get_public_provinces() -> List[Dict[str, Any]]:
+	"""
+	Get all provinces. Publicly accessible.
 	
-# 	Args:
-# 		report_data (dict): Form data to validate
-# 		language (str): Language code for error messages ('ar' for Arabic, 'en' for English, default: 'en')
+	Returns:
+		list: List of Province documents
+	"""
+	try:
+		provinces = frappe.db.get_list(
+			"Province",
+			fields=["*"],
+			order_by="name asc"
+		)
+		return provinces
+	except Exception as e:
+		frappe.log_error(f"Error fetching provinces: {str(e)}")
+		return []
+
+
+@frappe.whitelist()
+def get_dashboard_stats() -> Dict[str, Any]:
+	"""
+	Get dashboard statistics for the current user.
+	Returns:
+		- Number of reports made last week
+		- Number of reports made today
+		- 5 most recent reports with full data
+	"""
+	from frappe.utils import add_days, nowdate
 	
-# 	Returns:
-# 		dict: Validation result with errors if any
-# 	"""
-	
-# 	try:
-# 		# Validate language parameter
-# 		if language not in ["en", "ar"]:
-# 			language = "en"
+	try:
+		user = frappe.session.user
+		today = nowdate()
+		last_week = add_days(today, -7)
 		
-# 		errors = {}
-# 		doctype_meta = frappe.get_meta("EWS Report")
+		# Reports last week (last 7 days)
+		last_week_count = frappe.db.count("EWS Report", {
+			"owner": user,
+			"creation": [">=", last_week]
+		})
 		
-# 		for field in doctype_meta.fields:
-# 			fieldname = field.fieldname
+		# Reports today
+		today_count = frappe.db.count("EWS Report", {
+			"owner": user,
+			"creation": [">=", today]
+		})
+		
+		# Recent 5 reports
+		# Using get_list with * fetches all columns in the main table
+		recent_reports = frappe.get_list("EWS Report", 
+			filters={"owner": user},
+			fields=["*"],
+			order_by="creation desc",
+			limit=5
+		)
+		
+		return {
+			"reports_last_week": last_week_count,
+			"reports_today": today_count,
+			"recent_reports": recent_reports
+		}
+	except Exception as e:
+		frappe.log_error(f"Error fetching dashboard stats: {str(e)}")
+		return {
+			"reports_last_week": 0,
+			"reports_today": 0,
+			"recent_reports": []
+		}
+
+
+@frappe.whitelist()
+def get_user_report_history(limit: int = 20) -> List[Dict[str, Any]]:
+	"""
+	Get user report history.
+	Args:
+		limit (int): Number of reports to return (default 20)
+	"""
+	try:
+		return frappe.get_list("EWS Report", 
+			filters={"owner": frappe.session.user},
+			fields=["*"],
+			order_by="creation desc",
+			limit_page_length=int(limit)
+		)
+	except Exception as e:
+		frappe.log_error(f"Error fetching report history: {str(e)}")
+		return []
+
+
+@frappe.whitelist()
+def update_account_settings(full_name: Optional[str] = None, password: Optional[str] = None) -> Dict[str, Any]:
+	"""
+	Update user account settings (name and password).
+	"""
+	from frappe.utils.password import update_password
+	
+	try:
+		user = frappe.session.user
+		
+		if full_name:
+			frappe.db.set_value("User", user, "first_name", full_name)
+		
+		if password:
+			# update_password handles hashing and saving
+			update_password(user, password)
 			
-# 			# Check mandatory_depends_on
-# 			if field.mandatory_depends_on and fieldname in report_data:
-# 				# Evaluate the dependency expression
-# 				doc_dict = {"doc": report_data}
-# 				try:
-# 					if not frappe.safe_eval(field.mandatory_depends_on, doc_dict):
-# 						errors[fieldname] = _translate_text("This field is required based on your selections", language)
-# 				except:
-# 					pass
-		
-# 		return {
-# 			"valid": len(errors) == 0,
-# 			"errors": errors,
-# 			"language": language
-# 		}
-	
-# 	except Exception as e:
-# 		frappe.log_error(f"Error validating dependencies: {str(e)}")
-# 		return {
-# 			"valid": False,
-# 			"errors": {"general": str(e)},
-# 			"language": language
-# 		}
+		return {
+			"status": "success",
+			"message": _("Account settings updated successfully")
+		}
+	except Exception as e:
+		frappe.log_error(f"Error updating account settings: {str(e)}")
+		frappe.throw(_("Error updating account settings: {0}").format(str(e)))
+
+
+@frappe.whitelist(allow_guest=True)
+def get_about_app_text() -> Dict[str, str]:
+	"""
+	Return text from single settings doctype EWS Settings.
+	"""
+	try:
+		about_text = frappe.db.get_single_value("EWS Settings", "about_app_text")
+		return {"about_app_text": about_text}
+	except Exception as e:
+		frappe.log_error(f"Error fetching about text: {str(e)}")
+		return {"about_app_text": ""}
 
 

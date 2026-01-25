@@ -9,14 +9,18 @@
   "tab1_tab",
   "observer",
   "timestamp",
-  "c",
+  "province",
   "administrative_site",
-  "column_break_jmsk",
   "district",
+  "column_break_jmsk",
   "altitude",
   "accuracy",
+  "latitude",
+  "longitude",
   "column_break_uncg",
   "location",
+  "section_break_pylx",
+  "whatsapp_status",
   "tab2_tab",
   "section_break_enik",
   "report_type",
@@ -150,12 +154,6 @@
    "options": "Conflict Sub-fields"
   },
   {
-   "fieldname": "c",
-   "fieldtype": "Link",
-   "label": "Province",
-   "options": "Province"
-  },
-  {
    "fieldname": "altitude",
    "fieldtype": "Float",
    "label": "Altitude"
@@ -207,12 +205,40 @@
    "fieldname": "details_tab",
    "fieldtype": "Tab Break",
    "label": "Details"
+  },
+  {
+   "fieldname": "province",
+   "fieldtype": "Link",
+   "label": "Province",
+   "options": "Province"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Float",
+   "label": "Latitude",
+   "precision": "9"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Float",
+   "label": "Longitude",
+   "precision": "9"
+  },
+  {
+   "fieldname": "section_break_pylx",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "whatsapp_status",
+   "fieldtype": "Select",
+   "label": "Whatsapp Status",
+   "options": "Not Sent\nSent\nError"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-24 12:59:38.847718",
+ "modified": "2026-01-25 19:43:23.766525",
  "modified_by": "Administrator",
  "module": "Ews",
  "name": "EWS Report",
@@ -228,6 +254,19 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nineveh Reporter",
+   "select": 1,
    "share": 1,
    "write": 1
   }

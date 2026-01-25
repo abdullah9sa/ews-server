@@ -5,21 +5,20 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "docf"
+  "about_app_text"
  ],
  "fields": [
   {
-   "fieldname": "docf",
-   "fieldtype": "Link",
-   "label": "DocF",
-   "options": "DocField"
+   "fieldname": "about_app_text",
+   "fieldtype": "Text",
+   "label": "About App Text"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-01-19 20:47:10.551086",
+ "modified": "2026-01-25 19:48:13.850802",
  "modified_by": "Administrator",
  "module": "Ews",
  "name": "EWS Settings",
