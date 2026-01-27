@@ -621,7 +621,7 @@ def register_reporter(full_name: str, email: str, province: str, password: str) 
 		full_name (str): Full name of the user
 		email (str): Email address (login ID)
 		province (str): Province name
-		password (str): User's password
+		password (str): User's password (weak passwords allowed)
 		
 	Returns:
 		dict: Success message or error
@@ -629,7 +629,10 @@ def register_reporter(full_name: str, email: str, province: str, password: str) 
 	try:
 		if frappe.db.exists("User", email):
 			frappe.throw(_("User with email {0} already exists").format(email))
-			
+		
+		# Disable strong password policy for registration
+		frappe.flags.ignore_password_policy = True
+		
 		# Create User document
 		user = frappe.new_doc("User")
 		user.first_name = full_name
@@ -667,6 +670,9 @@ def register_reporter(full_name: str, email: str, province: str, password: str) 
 	except Exception as e:
 		frappe.log_error(f"Error registering user: {str(e)}")
 		frappe.throw(_("Error registering user: {0}").format(str(e)))
+	finally:
+		# Reset password policy flag
+		frappe.flags.ignore_password_policy = False
 
 
 @frappe.whitelist(allow_guest=True)
@@ -774,7 +780,11 @@ def update_account_settings(full_name: Optional[str] = None, password: Optional[
 		
 		if password:
 			# update_password handles hashing and saving
-			update_password(user, password)
+			frappe.flags.ignore_password_policy = True
+			try:
+				update_password(user, password)
+			finally:
+				frappe.flags.ignore_password_policy = False
 			
 		return {
 			"status": "success",
@@ -796,5 +806,41 @@ def get_about_app_text() -> Dict[str, str]:
 	except Exception as e:
 		frappe.log_error(f"Error fetching about text: {str(e)}")
 		return {"about_app_text": ""}
+
+
+@frappe.whitelist()
+def get_current_user_info() -> Dict[str, Any]:
+	"""
+	Get current user's name and province.
+	
+	Returns:
+		dict: Contains user's first_name and province name
+	"""
+	try:
+		user_email = frappe.session.user
+		
+		# Get user's full name
+		user_doc = frappe.get_doc("User", user_email)
+		full_name = user_doc.first_name or ""
+		
+		# Get user's province from their roles
+		# Roles follow pattern "Province_Name Reporter"
+		province = None
+		for role in user_doc.get("roles", []):
+			role_name = role.role
+			# Extract province from "Province Reporter" pattern
+			if role_name.endswith(" Reporter"):
+				province = role_name.replace(" Reporter", "")
+				break
+		
+		return {
+			"name": full_name,
+			"email": user_email,
+			"province": province
+		}
+	
+	except Exception as e:
+		frappe.log_error(f"Error fetching current user info: {str(e)}")
+		frappe.throw(_("Error fetching user information: {0}").format(str(e)))
 
 
