@@ -2,6 +2,40 @@ import frappe
 from frappe import _
 from typing import Dict, List, Any, Optional
 
+# Configuration constants for field visibility and access control
+# These can be easily modified to control which fields are read-only or hidden
+READONLY_FIELDS = set({"province"})  # Fields that should always be read-only (e.g., {"creation", "modified_by"})
+HIDDEN_FIELDS = set({"province","whatsapp_status","observer","creation", "modified_by"})    # Fields that should be hidden from the API (e.g., {"internal_notes"})
+
+# Configuration for response dependencies
+# Maps child field names to their dependency configuration
+RESPONSE_DEPENDENCIES = {
+	"conflict_threshold": {
+		"depends_on": "conflict_indicators",
+		"filter_field": "conflict_indicators",
+		"child_doctype": "Conflict Sub-fields",
+		"label_field": "threshold",
+		"group_key": "thresholds",
+		"type_value": "conflict_indicator"
+	},
+	"standard": {
+		"depends_on": "climate_indicators",
+		"filter_field": "climate_indicators",
+		"child_doctype": "Climate Indicators Subfields",
+		"label_field": "standard",
+		"group_key": "subfields",
+		"type_value": "climate_indicator"
+	},
+	"district": {
+		"depends_on": "administrative_site",
+		"filter_field": "administrative_site",
+		"child_doctype": "District",
+		"label_field": "name",
+		"group_key": "districts",
+		"type_value": "district"
+	}
+}
+
 def _translate_text(text: str, language: str = "en") -> str:
 	"""
 	Translate text using Frappe's translation system.
@@ -95,7 +129,8 @@ def _translate_option_values(options: List[Any], language: str = "en") -> List[A
 	return result
 
 @frappe.whitelist(allow_guest=False)
-def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "en") -> Dict[str, Any]:
+def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "en", 
+                        readonly_fields: Optional[str] = None, hidden_fields: Optional[str] = None) -> Dict[str, Any]:
 	"""
 	Get EWS Report form structure with all fields, options, and dependencies.
 	
@@ -109,6 +144,8 @@ def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "e
 	Args:
 		exclude_fields (str): Comma-separated fieldnames to exclude from response
 		language (str): Language code for translations ('ar' for Arabic, 'en' for English, default: 'en')
+		readonly_fields (str): Comma-separated fieldnames to force as read-only (in addition to code configuration)
+		hidden_fields (str): Comma-separated fieldnames to hide from response (in addition to code configuration)
 	
 	Returns:
 		dict: Mobile-friendly form structure with nested options and dependencies
@@ -123,6 +160,23 @@ def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "e
 		excluded = set()
 		if exclude_fields:
 			excluded = set(f.strip() for f in exclude_fields.split(',') if f.strip())
+			
+		# Explicitly exclude province field as requested
+		excluded.add("province")
+		
+		# Parse readonly_fields - combine code config with runtime parameter
+		readonly = READONLY_FIELDS.copy()
+		if readonly_fields:
+			readonly.update(f.strip() for f in readonly_fields.split(',') if f.strip())
+		
+		# Parse hidden_fields - combine code config with runtime parameter
+		hidden = HIDDEN_FIELDS.copy()
+		if hidden_fields:
+			hidden.update(f.strip() for f in hidden_fields.split(',') if f.strip())
+			
+		# Automatically exclude dependent child fields from top-level schema
+		# Their values will be embedded in parent fields
+		excluded.update(RESPONSE_DEPENDENCIES.keys())
 		
 		# Get EWS Report doctype metadata
 		doctype_meta = frappe.get_meta("EWS Report")
@@ -252,7 +306,7 @@ def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "e
 						"columns": []
 					}
 				
-				field_data = _build_field_data(field, excluded, language)
+				field_data = _build_field_data(field, excluded, language, readonly, hidden)
 				if field_data:
 					fields_in_column.append(field_data)
 		
@@ -286,8 +340,13 @@ def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "e
 		frappe.throw(_("Error fetching EWS Report form: {0}").format(str(e)))
 
 
-def _build_field_data(field, excluded: set, language: str = "en") -> Optional[Dict[str, Any]]:
+def _build_field_data(field, excluded: set, language: str = "en", readonly: set = None, hidden: set = None) -> Optional[Dict[str, Any]]:
 	"""Build field data structure for a single field."""
+	
+	if readonly is None:
+		readonly = set()
+	if hidden is None:
+		hidden = set()
 	
 	fieldname = field.fieldname
 	
@@ -298,8 +357,9 @@ def _build_field_data(field, excluded: set, language: str = "en") -> Optional[Di
 		"fieldname": fieldname,
 		"label": _translate_text(field.label or fieldname, language),
 		"fieldtype": field.fieldtype,
-		"reqd": field.reqd or False,
-		"read_only": field.read_only or False
+		"reqd": 1 if field.reqd else 0,
+		"read_only": 1 if (field.read_only or fieldname in readonly) else 0,
+		"hidden": 1 if fieldname in hidden else 0
 	}
 	
 	# Add optional properties based on field configuration
@@ -315,18 +375,25 @@ def _build_field_data(field, excluded: set, language: str = "en") -> Optional[Di
 	if field.mandatory_depends_on:
 		field_data["mandatory_depends_on"] = field.mandatory_depends_on
 	
+	# Set default value for province field based on user's role
+	if fieldname == "province":
+		user_province = _get_user_province()
+		if user_province:
+			field_data["default"] = user_province
+	
 	# Add field-specific properties
 	if field.fieldtype == "Link":
 		field_data["options"] = field.options
-		# Embed link options directly in field
-		field_data["option_values"] = _get_link_options(field.options, excluded, language)
 		
-		# Add special metadata for dependent fields
-		if field.options == "Administrative Site":
-			field_data["filters_by"] = "province"
-			field_data["filter_field"] = "province"
-			field_data["help_text"] = _translate_text("Select a Province first to filter available Administrative Sites", language)
-			field_data["depends_on_accessible_provinces"] = True
+		# 1. Get base options (handles Role checks for Province, etc.)
+		options = _get_link_options(field.options, excluded, language)
+		
+		# 2. Enrich with children recursively if this field has dependents
+		mapped_child = _attach_recursive_dependencies(field.fieldname, options, language)
+		
+		field_data["option_values"] = options
+		if mapped_child:
+			field_data["mapped_child_field"] = mapped_child
 	
 	elif field.fieldtype == "Select":
 		if field.options:
@@ -366,22 +433,26 @@ def _get_link_options(link_doctype: str, excluded: set, language: str = "en") ->
 		elif link_doctype == "Province":
 			return _get_province_options_for_user(excluded, language)
 		
-		elif link_doctype == "Climate Indicators":
-			return _get_climate_indicators_with_subfields(excluded, language)
-		
-		elif link_doctype == "Conflict Indicators":
-			return _get_conflict_indicators_with_thresholds(excluded, language)
+		# Climate/Conflict indicators are now handled by _get_link_options_with_children
+		# via RESPONSE_DEPENDENCIES config in _build_field_data
+
 		
 		elif link_doctype == "Administrative Site":
-			# Return only admin sites related to user's accessible provinces
-			return _get_administrative_sites_for_user(excluded, language)
+			# Return expanded admin sites with nested districts
+			# Filtered by user's default province
+			return _get_administrative_sites_with_districts_for_user(excluded, language)
+		
+		elif link_doctype == "District":
+			# Return only districts related to user's accessible provinces (via admin sites)
+			return _get_districts_for_user(excluded, language)
 		
 		else:
 			# Generic link field - get all documents
 			records = frappe.db.get_list(
 				link_doctype,
 				fields=["name"],
-				limit_page_length=500
+				limit_page_length=500,
+				ignore_permissions=True
 			)
 			return [{"value": r["name"], "label": _translate_text(r["name"], language)} for r in records]
 	
@@ -413,8 +484,13 @@ def _get_province_options_for_user(excluded: set, language: str = "en") -> List[
 			province_name = province["name"]
 			required_role = province.get("role")
 			
-			# Only show provinces that have a role requirement AND user has that role
-			if required_role and required_role in user_roles:
+			# Show province if:
+			# 1. User is Administrator/System Manager
+			# 2. No role is defined (Public)
+			# 3. User has the specific required role
+			if ("Administrator" in user_roles or "System Manager" in user_roles) or \
+			   (not required_role) or \
+			   (required_role in user_roles):
 				available_provinces.append({
 					"value": province_name,
 					"label": _translate_text(province_name, language),
@@ -448,8 +524,10 @@ def _get_accessible_province_names() -> List[str]:
 		accessible_provinces = []
 		for province in provinces:
 			required_role = province.get("role")
-			# Only add if province has a role requirement AND user has that role
-			if required_role and required_role in user_roles:
+			# Same logic as _get_province_options_for_user
+			if ("Administrator" in user_roles or "System Manager" in user_roles) or \
+			   (not required_role) or \
+			   (required_role in user_roles):
 				accessible_provinces.append(province["name"])
 		
 		return accessible_provinces
@@ -459,12 +537,63 @@ def _get_accessible_province_names() -> List[str]:
 		return []
 
 
-def _get_administrative_sites_for_user(excluded: set, language: str = "en") -> List[Dict[str, Any]]:
+def _get_administrative_sites_with_districts_for_user(excluded: set, language: str = "en") -> List[Dict[str, Any]]:
 	"""
-	Get Administrative Sites only for provinces the user has access to.
+	Get Administrative Sites for the user's assigned province, including nested Districts.
+	"""
+	try:
+		# 1. Determine target province(s)
+		# Prioritize the user's assigned "Reporter" province. 
+		# If none (e.g. Admin), fall back to all accessible provinces.
+		target_province = _get_user_province()
+		
+		filters = {}
+		if target_province:
+			filters = {"province": target_province}
+		else:
+			# Fallback: all accessible provinces
+			accessible = _get_accessible_province_names()
+			if accessible:
+				filters = {"province": ["in", accessible]}
+			else:
+				return [] # No access
+		
+		# 2. Get Admin Sites
+		admin_sites = frappe.db.get_list(
+			"Administrative Site",
+			fields=["name", "province"],
+			filters=filters,
+			limit_page_length=1000,
+			ignore_permissions=True,
+			order_by="name asc"
+		)
+		
+		# 3. Build options list
+		options = []
+		for site in admin_sites:
+			options.append({
+				"value": site["name"],
+				"label": _translate_text(site["name"], language),
+				"province": site["province"],
+				"type": "administrative_site"
+			})
+			
+		# 4. Attach recursive dependencies (Districts)
+		# This uses the RESPONSE_DEPENDENCIES config to attach districts
+		_attach_recursive_dependencies("administrative_site", options, language)
+		
+		return options
 	
-	Uses user's role-based access to provinces to filter available admin sites.
-	If user has no accessible provinces, returns empty list.
+	except Exception as e:
+		frappe.log_error(f"Error getting admin sites with districts: {str(e)}")
+		return []
+
+
+def _get_districts_for_user(excluded: set, language: str = "en") -> List[Dict[str, Any]]:
+	"""
+	Get Districts only for provinces the user has access to.
+	
+	Filters via Administrative Site.
 	"""
 	try:
 		# Get provinces user has access to
@@ -474,142 +603,106 @@ def _get_administrative_sites_for_user(excluded: set, language: str = "en") -> L
 		if not accessible_provinces:
 			return []
 		
-		# Get administrative sites for accessible provinces only
-		records = frappe.db.get_list(
+		# Get administrative sites for accessible provinces
+		admin_sites = frappe.db.get_list(
 			"Administrative Site",
-			fields=["name", "province"],
-			filters=[["province", "in", accessible_provinces]],
-			limit_page_length=1000
+			fields=["name"],
+			filters={"province": ["in", accessible_provinces]},
+			pluck="name", # optimization: get list of names directly
+			limit_page_length=2000,
+			ignore_permissions=True
+		)
+		
+		if not admin_sites:
+			return []
+		
+		# Get districts for these admin sites
+		records = frappe.db.get_list(
+			"District",
+			fields=["name", "administrative_site"],
+			filters={"administrative_site": ["in", admin_sites]},
+			limit_page_length=2000,
+			ignore_permissions=True
 		)
 		
 		return [
 			{
 				"value": r["name"],
 				"label": _translate_text(r["name"], language),
-				"province_filter": r.get("province")
+				"administrative_site_filter": r.get("administrative_site")
 			}
 			for r in records
 		]
 	
 	except Exception as e:
-		frappe.log_error(f"Error getting administrative sites for user: {str(e)}")
+		frappe.log_error(f"Error getting districts for user: {str(e)}")
 		return []
 
 
-def _get_climate_indicators_with_subfields(excluded: set, language: str = "en") -> List[Dict[str, Any]]:
+def _attach_recursive_dependencies(parent_fieldname: str, options: List[Dict[str, Any]], language: str = "en") -> Optional[str]:
 	"""
-	Get all Climate Indicators with their associated Subfields.
+	Recursively find and attach child dependencies to options.
 	
-	Structure:
-	{
-		"value": "indicator_name",
-		"label": "indicator_name",
-		"type": "indicator",
-		"subfields": [
-			{"value": "subfield_id", "label": "standard_name"},
-			...
-		]
-	}
+	Args:
+		parent_fieldname: The field name corresponding to the current options
+		options: List of option dictionaries (modified in-place)
+		language: Language code
+		
+	Returns:
+		str: The name of the immediate child field attached, or None
 	"""
+	mapped_child_field = None
+	dependency_config = None
 	
-	try:
-		indicators = frappe.db.get_list(
-			"Climate Indicators",
-			fields=["name"],
-			order_by="climate_indicator asc"
-		)
-		
-		result = []
-		
-		for indicator in indicators:
-			indicator_name = indicator["name"]
+	# Find if any field depends on this parent_fieldname
+	for child_field, config in RESPONSE_DEPENDENCIES.items():
+		if config.get("depends_on") == parent_fieldname:
+			mapped_child_field = child_field
+			dependency_config = config
+			break
 			
-			# Get subfields for this indicator
-			subfields = frappe.db.get_list(
-				"Climate Indicators Subfields",
-				fields=["name", "standard"],
-				filters={"climate_indicators": indicator_name},
-				order_by="standard asc"
+	if not dependency_config or not options:
+		return None
+		
+	# Process one level of dependency (recurse inside)
+	try:
+		for option in options:
+			parent_value = option.get("value")
+			if not parent_value:
+				continue
+				
+			# Fetch direct children
+			children = frappe.db.get_list(
+				dependency_config["child_doctype"],
+				fields=["name", dependency_config.get("label_field", "name")],
+				filters={dependency_config["filter_field"]: parent_value},
+				order_by=f"{dependency_config.get('label_field', 'name')} asc",
+				ignore_permissions=True
 			)
 			
-			indicator_data = {
-				"value": indicator_name,
-				"label": _translate_text(indicator_name, language),
-				"type": "climate_indicator",
-				"subfields": [
-					{
-						"value": sf["name"],
-						"label": _translate_text(sf.get("standard", sf["name"]), language)
-					}
-					for sf in subfields
-				]
-			}
+			child_options = []
+			for child in children:
+				child_val = child["name"]
+				child_label = child.get(dependency_config.get("label_field", "name"), child_val)
+				
+				child_opt = {
+					"value": child_val,
+					"label": _translate_text(child_label, language),
+					"type": dependency_config.get("type_value", "option")
+				}
+				child_options.append(child_opt)
+				
+			# Recurse: Treat this child as a parent for the next level
+			_attach_recursive_dependencies(mapped_child_field, child_options, language)
 			
-			result.append(indicator_data)
-		
-		return result
-	
-	except Exception as e:
-		frappe.log_error(f"Error getting climate indicators: {str(e)}")
-		return []
+			# Attach children to parent option
+			option[dependency_config["group_key"]] = child_options
+			
+		return mapped_child_field
 
-
-def _get_conflict_indicators_with_thresholds(excluded: set, language: str = "en") -> List[Dict[str, Any]]:
-	"""
-	Get all Conflict Indicators with their associated Thresholds.
-	
-	Structure:
-	{
-		"value": "indicator_name",
-		"label": "indicator_name",
-		"type": "indicator",
-		"thresholds": [
-			{"value": "threshold_id", "label": "threshold_name"},
-			...
-		]
-	}
-	"""
-	
-	try:
-		indicators = frappe.db.get_list(
-			"Conflict Indicators",
-			fields=["name"],
-			order_by="conflict_indicator asc"
-		)
-		
-		result = []
-		
-		for indicator in indicators:
-			indicator_name = indicator["name"]
-			
-			# Get thresholds for this indicator
-			thresholds = frappe.db.get_list(
-				"Conflict Sub-fields",
-				fields=["name", "threshold"],
-				filters={"conflict_indicators": indicator_name},
-				order_by="threshold asc"
-			)
-			
-			indicator_data = {
-				"value": indicator_name,
-				"label": _translate_text(indicator_name, language),
-				"type": "conflict_indicator",
-				"thresholds": [
-					{
-						"value": th["name"],
-						"label": _translate_text(th.get("threshold", th["name"]), language)
-					}
-					for th in thresholds
-				]
-			}
-			
-			result.append(indicator_data)
-		
-		return result
-	
 	except Exception as e:
-		frappe.log_error(f"Error getting conflict indicators: {str(e)}")
-		return []
+		frappe.log_error(f"Error attaching dependencies for {parent_fieldname}: {str(e)}")
+		return None
 
 
 @frappe.whitelist(allow_guest=True)
@@ -824,14 +917,7 @@ def get_current_user_info() -> Dict[str, Any]:
 		full_name = user_doc.first_name or ""
 		
 		# Get user's province from their roles
-		# Roles follow pattern "Province_Name Reporter"
-		province = None
-		for role in user_doc.get("roles", []):
-			role_name = role.role
-			# Extract province from "Province Reporter" pattern
-			if role_name.endswith(" Reporter"):
-				province = role_name.replace(" Reporter", "")
-				break
+		province = _get_user_province(user_email)
 		
 		return {
 			"name": full_name,
@@ -844,3 +930,22 @@ def get_current_user_info() -> Dict[str, Any]:
 		frappe.throw(_("Error fetching user information: {0}").format(str(e)))
 
 
+def _get_user_province(user_email: str = None) -> Optional[str]:
+	"""
+	Get the province associated with the user's role.
+	Roles follow pattern "Province_Name Reporter".
+	"""
+	try:
+		if not user_email:
+			user_email = frappe.session.user
+			
+		user_roles = frappe.get_roles(user_email)
+		
+		for role in user_roles:
+			if role.endswith(" Reporter"):
+				return role.replace(" Reporter", "")
+				
+		return None
+	except Exception as e:
+		frappe.log_error(f"Error getting user province: {str(e)}")
+		return None

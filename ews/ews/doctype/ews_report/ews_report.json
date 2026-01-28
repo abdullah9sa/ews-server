@@ -22,6 +22,8 @@
   "section_break_pylx",
   "whatsapp_status",
   "tab2_tab",
+  "report_timing",
+  "severity",
   "section_break_enik",
   "report_type",
   "climate_indicators",
@@ -29,18 +31,15 @@
   "conflict_indicators",
   "conflict_threshold",
   "column_break_hqjj",
+  "section_break_cfmk",
   "extra_details",
   "details_tab",
   "section_break_dolf",
-  "severity",
-  "report_timing",
-  "column_break_npvh",
-  "incident_extra_details",
-  "files_section",
+  "column_break_vsnu",
   "image",
   "image_2",
-  "column_break_mhma",
-  "audio"
+  "audio",
+  "column_break_npvh"
  ],
  "fields": [
   {
@@ -83,7 +82,8 @@
   },
   {
    "fieldname": "section_break_dolf",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Attachments"
   },
   {
    "fieldname": "severity",
@@ -135,11 +135,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "incident_extra_details",
-   "fieldtype": "Text",
-   "label": "Incident Extra Details"
-  },
-  {
    "depends_on": "eval:(doc.report_type == \"Climate / Water / Environment\" )",
    "fieldname": "standard",
    "fieldtype": "Link",
@@ -168,11 +163,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "files_section",
-   "fieldtype": "Section Break",
-   "label": "Files"
-  },
-  {
    "fieldname": "image",
    "fieldtype": "Attach Image",
    "label": "Image"
@@ -183,10 +173,6 @@
    "label": "Image 2"
   },
   {
-   "fieldname": "column_break_mhma",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "audio",
    "fieldtype": "Attach",
    "label": "Audio"
@@ -194,17 +180,17 @@
   {
    "fieldname": "tab1_tab",
    "fieldtype": "Tab Break",
-   "label": "Tab1"
+   "label": "Location Info"
   },
   {
    "fieldname": "tab2_tab",
    "fieldtype": "Tab Break",
-   "label": "Tab2"
+   "label": "Incident Information"
   },
   {
    "fieldname": "details_tab",
    "fieldtype": "Tab Break",
-   "label": "Details"
+   "label": "Attachments"
   },
   {
    "fieldname": "province",
@@ -233,12 +219,20 @@
    "fieldtype": "Select",
    "label": "Whatsapp Status",
    "options": "Not Sent\nSent\nError"
+  },
+  {
+   "fieldname": "section_break_cfmk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_vsnu",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-25 19:43:23.766525",
+ "modified": "2026-01-28 12:13:13.586771",
  "modified_by": "Administrator",
  "module": "Ews",
  "name": "EWS Report",
