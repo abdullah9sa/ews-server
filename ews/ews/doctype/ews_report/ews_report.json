@@ -24,6 +24,7 @@
   "tab2_tab",
   "report_timing",
   "severity",
+  "frequency",
   "section_break_enik",
   "report_type",
   "climate_indicators",
@@ -227,12 +228,18 @@
   {
    "fieldname": "column_break_vsnu",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "frequency",
+   "fieldtype": "Select",
+   "label": "Frequency",
+   "options": "Rare/First Time\nOccasionally Frequent\nConstantly Frequent or Almost Daily"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-28 12:13:13.586771",
+ "modified": "2026-01-30 17:50:35.456092",
  "modified_by": "Administrator",
  "module": "Ews",
  "name": "EWS Report",
