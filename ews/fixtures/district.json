@@ -1,1 +1,32 @@
-[]
+[
+ {
+  "administrative_site": "Al-Ba'aj",
+  "data_ckdw": "Nineveh",
+  "district_name": "قريه",
+  "district_name_arabic": null,
+  "docstatus": 0,
+  "doctype": "District",
+  "modified": "2026-02-02 11:19:15.497674",
+  "name": "قريه"
+ },
+ {
+  "administrative_site": "Al-Ba'aj",
+  "data_ckdw": "Nineveh",
+  "district_name": "raw",
+  "district_name_arabic": null,
+  "docstatus": 0,
+  "doctype": "District",
+  "modified": "2026-02-02 12:48:04.811226",
+  "name": "raw"
+ },
+ {
+  "administrative_site": "Tel Abta",
+  "data_ckdw": "Nineveh",
+  "district_name": "test",
+  "district_name_arabic": null,
+  "docstatus": 0,
+  "doctype": "District",
+  "modified": "2026-01-30 19:54:12.046823",
+  "name": "test"
+ }
+]

@@ -4,7 +4,7 @@ from typing import Dict, List, Any, Optional
 
 # Configuration constants for field visibility and access control
 # These can be easily modified to control which fields are read-only or hidden
-READONLY_FIELDS = set({"province"})  # Fields that should always be read-only (e.g., {"creation", "modified_by"})
+READONLY_FIELDS = set({"province","longitude","latitude"})  # Fields that should always be read-only (e.g., {"creation", "modified_by"})
 HIDDEN_FIELDS = set({"province","whatsapp_status","observer","creation", "modified_by"})    # Fields that should be hidden from the API (e.g., {"internal_notes"})
 
 # Configuration for response dependencies
@@ -32,11 +32,12 @@ RESPONSE_DEPENDENCIES = {
 		"child_doctype": "District",
 		"label_field": "name",
 		"group_key": "districts",
-		"type_value": "district"
+		"type_value": "district",
+		"label_field_ar": "district_name_arabic"
 	}
 }
 
-def _translate_text(text: str, language: str = "en") -> str:
+def _translate_text(text: str, language: str = "ar") -> str:
 	"""
 	Translate text using Frappe's translation system.
 	
@@ -59,7 +60,7 @@ def _translate_text(text: str, language: str = "en") -> str:
 		frappe.log_error(f"Error translating '{text}' to {language}: {str(e)}")
 		return text
 
-def _apply_language_to_dict(data: Any, language: str = "en", keys_to_translate: List[str] = None) -> Any:
+def _apply_language_to_dict(data: Any, language: str = "ar", keys_to_translate: List[str] = None) -> Any:
 	"""
 	Recursively apply language translations to dictionary/list structures.
 	Translates ALL label-like fields and option values.
@@ -85,8 +86,8 @@ def _apply_language_to_dict(data: Any, language: str = "en", keys_to_translate: 
 				# Translate label-like keys
 				result[key] = _translate_text(value, language)
 			elif key == "option_values" and isinstance(value, list):
-				# Translate option values
-				result[key] = _translate_option_values(value, language)
+				# Translate option values (and their nested children like districts, subfields, etc.)
+				result[key] = _translate_option_values(value, language, keys_to_translate)
 			elif isinstance(value, (dict, list)):
 				# Recursively translate nested structures
 				result[key] = _apply_language_to_dict(value, language, keys_to_translate)
@@ -98,19 +99,17 @@ def _apply_language_to_dict(data: Any, language: str = "en", keys_to_translate: 
 	else:
 		return data
 
-def _translate_option_values(options: List[Any], language: str = "en") -> List[Any]:
+def _translate_option_values(options: List[Any], language: str = "ar", keys_to_translate: List[str] = None) -> List[Any]:
 	"""
-	Translate option values in lists (for Select fields and similar).
-	
-	Args:
-		options: List of options (can be strings or dicts)
-		language: Target language code
-	
-	Returns:
-		List with translated options
+	Translate option values in lists.
+	Ensures string options are converted to dicts {value: "Select", label: "اختر"} 
+	so original values are preserved for logic dependencies.
 	"""
 	if language == "en" or not options:
 		return options
+	
+	if keys_to_translate is None:
+		keys_to_translate = ["label", "description", "placeholder", "help_text", "title"]
 	
 	result = []
 	for option in options:
@@ -119,17 +118,27 @@ def _translate_option_values(options: List[Any], language: str = "en") -> List[A
 			translated_option = option.copy()
 			if "label" in translated_option and isinstance(translated_option["label"], str):
 				translated_option["label"] = _translate_text(translated_option["label"], language)
-			# Value should not be translated as it is the identifier
+			
+			# Recursively translate nested dependency fields: districts, subfields, thresholds, etc.
+			dependency_keys = ["districts", "subfields", "thresholds"]
+			for dep_key in dependency_keys:
+				if dep_key in translated_option and isinstance(translated_option[dep_key], list):
+					translated_option[dep_key] = _translate_option_values(
+						translated_option[dep_key], language, keys_to_translate
+					)
 			result.append(translated_option)
 		elif isinstance(option, str):
-			# Translate string option
-			result.append(_translate_text(option, language))
+			# FIX: Return dict with original value AND translated label
+			result.append({
+				"value": option,
+				"label": _translate_text(option, language)
+			})
 		else:
 			result.append(option)
 	return result
 
 @frappe.whitelist(allow_guest=False)
-def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "en", 
+def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "ar", 
                         readonly_fields: Optional[str] = None, hidden_fields: Optional[str] = None) -> Dict[str, Any]:
 	"""
 	Get EWS Report form structure with all fields, options, and dependencies.
@@ -261,31 +270,32 @@ def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "e
 			
 			# Handle Column Breaks
 			elif field.fieldtype == "Column Break":
-				# Ensure we have a tab and section
-				if current_tab is None:
-					current_tab = {
-						"fieldname": "default_tab",
-						"label": _translate_text("Details", language),
-						"type": "tab",
-						"sections": []
-					}
+				pass
+				# # Ensure we have a tab and section
+				# if current_tab is None:
+				# 	current_tab = {
+				# 		"fieldname": "default_tab",
+				# 		"label": _translate_text("Details", language),
+				# 		"type": "tab",
+				# 		"sections": []
+				# 	}
 				
-				if current_section is None:
-					current_section = {
-						"fieldname": "default_section",
-						"label": _translate_text("Information", language),
-						"type": "section",
-						"columns": []
-					}
+				# if current_section is None:
+				# 	current_section = {
+				# 		"fieldname": "default_section",
+				# 		"label": _translate_text("Information", language),
+				# 		"type": "section",
+				# 		"columns": []
+				# 	}
 				
-				# Save current column if it has fields
-				if fields_in_column:
-					current_section["columns"].append({
-						"column_index": current_column,
-						"fields": fields_in_column
-					})
-				current_column += 1
-				fields_in_column = []
+				# # Save current column if it has fields
+				# if fields_in_column:
+				# 	current_section["columns"].append({
+				# 		"column_index": current_column,
+				# 		"fields": fields_in_column
+				# 	})
+				# current_column += 1
+				# fields_in_column = []
 			
 			# Handle regular fields
 			else:
@@ -340,7 +350,7 @@ def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "e
 		frappe.throw(_("Error fetching EWS Report form: {0}").format(str(e)))
 
 
-def _build_field_data(field, excluded: set, language: str = "en", readonly: set = None, hidden: set = None) -> Optional[Dict[str, Any]]:
+def _build_field_data(field, excluded: set, language: str = "ar", readonly: set = None, hidden: set = None) -> Optional[Dict[str, Any]]:
 	"""Build field data structure for a single field."""
 	
 	if readonly is None:
@@ -413,7 +423,7 @@ def _build_field_data(field, excluded: set, language: str = "en", readonly: set 
 	return field_data
 
 
-def _get_link_options(link_doctype: str, excluded: set, language: str = "en") -> List[Dict[str, Any]]:
+def _get_link_options(link_doctype: str, excluded: set, language: str = "ar") -> List[Dict[str, Any]]:
 	"""
 	Get all options for a Link field.
 	
@@ -461,7 +471,7 @@ def _get_link_options(link_doctype: str, excluded: set, language: str = "en") ->
 		return []
 
 
-def _get_province_options_for_user(excluded: set, language: str = "en") -> List[Dict[str, Any]]:
+def _get_province_options_for_user(excluded: set, language: str = "ar") -> List[Dict[str, Any]]:
 	"""
 	Get provinces available to current user based on their roles.
 	
@@ -537,7 +547,7 @@ def _get_accessible_province_names() -> List[str]:
 		return []
 
 
-def _get_administrative_sites_with_districts_for_user(excluded: set, language: str = "en") -> List[Dict[str, Any]]:
+def _get_administrative_sites_with_districts_for_user(excluded: set, language: str = "ar") -> List[Dict[str, Any]]:
 	"""
 	Get Administrative Sites for the user's assigned province, including nested Districts.
 	"""
@@ -589,7 +599,7 @@ def _get_administrative_sites_with_districts_for_user(excluded: set, language: s
 		return []
 
 
-def _get_districts_for_user(excluded: set, language: str = "en") -> List[Dict[str, Any]]:
+def _get_districts_for_user(excluded: set, language: str = "ar") -> List[Dict[str, Any]]:
 	"""
 	Get Districts only for provinces the user has access to.
 	
@@ -617,9 +627,16 @@ def _get_districts_for_user(excluded: set, language: str = "en") -> List[Dict[st
 			return []
 		
 		# Get districts for these admin sites
+		# Determine fields to fetch
+		fields = ["name", "administrative_site"]
+		label_field = "name"
+		if language == "ar":
+			fields.append("district_name_arabic")
+			label_field = "district_name_arabic"
+
 		records = frappe.db.get_list(
 			"District",
-			fields=["name", "administrative_site"],
+			fields=fields,
 			filters={"administrative_site": ["in", admin_sites]},
 			limit_page_length=2000,
 			ignore_permissions=True
@@ -628,7 +645,7 @@ def _get_districts_for_user(excluded: set, language: str = "en") -> List[Dict[st
 		return [
 			{
 				"value": r["name"],
-				"label": _translate_text(r["name"], language),
+				"label": _translate_text(r.get(label_field) or r["name"], language),
 				"administrative_site_filter": r.get("administrative_site")
 			}
 			for r in records
@@ -639,7 +656,7 @@ def _get_districts_for_user(excluded: set, language: str = "en") -> List[Dict[st
 		return []
 
 
-def _attach_recursive_dependencies(parent_fieldname: str, options: List[Dict[str, Any]], language: str = "en") -> Optional[str]:
+def _attach_recursive_dependencies(parent_fieldname: str, options: List[Dict[str, Any]], language: str = "ar") -> Optional[str]:
 	"""
 	Recursively find and attach child dependencies to options.
 	
@@ -672,18 +689,23 @@ def _attach_recursive_dependencies(parent_fieldname: str, options: List[Dict[str
 				continue
 				
 			# Fetch direct children
+			label_field = dependency_config.get("label_field", "name")
+			# Use Arabic label if available and requested
+			if language == "ar" and dependency_config.get("label_field_ar"):
+				label_field = dependency_config.get("label_field_ar")
+
 			children = frappe.db.get_list(
 				dependency_config["child_doctype"],
-				fields=["name", dependency_config.get("label_field", "name")],
+				fields=["name", label_field],
 				filters={dependency_config["filter_field"]: parent_value},
-				order_by=f"{dependency_config.get('label_field', 'name')} asc",
+				order_by=f"{label_field} asc",
 				ignore_permissions=True
 			)
 			
 			child_options = []
 			for child in children:
 				child_val = child["name"]
-				child_label = child.get(dependency_config.get("label_field", "name"), child_val)
+				child_label = child.get(label_field) or child_val
 				
 				child_opt = {
 					"value": child_val,
@@ -789,9 +811,11 @@ def get_public_provinces() -> List[Dict[str, Any]]:
 
 
 @frappe.whitelist()
-def get_dashboard_stats() -> Dict[str, Any]:
+def get_dashboard_stats(language: str = "ar") -> Dict[str, Any]:
 	"""
 	Get dashboard statistics for the current user.
+	Args:
+		language (str): Language code ('ar' for Arabic, 'en' for English)
 	Returns:
 		- Number of reports made last week
 		- Number of reports made today
@@ -825,6 +849,9 @@ def get_dashboard_stats() -> Dict[str, Any]:
 			limit=5
 		)
 		
+		# Translate reports
+		recent_reports = _translate_report_list(recent_reports, language)
+		
 		return {
 			"reports_last_week": last_week_count,
 			"reports_today": today_count,
@@ -840,22 +867,73 @@ def get_dashboard_stats() -> Dict[str, Any]:
 
 
 @frappe.whitelist()
-def get_user_report_history(limit: int = 20) -> List[Dict[str, Any]]:
+def get_user_report_history(limit: int = 20, language: str = "ar") -> List[Dict[str, Any]]:
 	"""
 	Get user report history.
 	Args:
 		limit (int): Number of reports to return (default 20)
+		language (str): Language code ('ar' for Arabic, 'en' for English)
 	"""
 	try:
-		return frappe.get_list("EWS Report", 
+		reports = frappe.get_list("EWS Report", 
 			filters={"owner": frappe.session.user},
 			fields=["*"],
 			order_by="creation desc",
 			limit_page_length=int(limit)
 		)
+		return _translate_report_list(reports, language)
 	except Exception as e:
 		frappe.log_error(f"Error fetching report history: {str(e)}")
 		return []
+
+def _translate_report_list(reports: List[Dict[str, Any]], language: str = "ar") -> List[Dict[str, Any]]:
+	"""
+	Translate report values to the target language.
+	Translates Select fields and Link fields where applicable.
+	"""
+	if not reports or language != "ar":
+		return reports
+		
+	# Select fields to translate
+	# These are standard strings that should be in translation files
+	select_fields = [
+		"severity", "report_timing", "report_type", 
+		"frequency", "whatsapp_status"
+	]
+	
+	# Link fields relying on frappe translation (translatable=1)
+	# Assumes names are translated in the system
+	standard_link_fields = [
+		"administrative_site", "climate_indicators", "conflict_indicators", 
+		"standard", "conflict_threshold"
+	]
+
+	for report in reports:
+		# 1. Translate Select fields
+		for field in select_fields:
+			if report.get(field):
+				report[field] = frappe._(report[field], lang=language)
+		
+		# 2. Translate Standard Link fields
+		for field in standard_link_fields:
+			if report.get(field):
+				report[field] = frappe._(report[field], lang=language)
+				
+		# 3. Translate Fields with Special Arabic Columns
+		
+		# Province -> province_name_arabic
+		if report.get("province"):
+			ar_province = frappe.db.get_value("Province", report["province"], "province_name_arabic")
+			if ar_province:
+				report["province"] = ar_province
+				
+		# District -> district_name_arabic
+		if report.get("district"):
+			ar_district = frappe.db.get_value("District", report["district"], "district_name_arabic")
+			if ar_district:
+				report["district"] = ar_district
+
+	return reports
 
 
 @frappe.whitelist()

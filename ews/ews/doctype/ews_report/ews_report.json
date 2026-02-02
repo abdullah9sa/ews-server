@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "tab1_tab",
+  "location_info_section",
   "observer",
   "timestamp",
   "province",
@@ -22,6 +23,7 @@
   "section_break_pylx",
   "whatsapp_status",
   "tab2_tab",
+  "incident_information_section",
   "report_timing",
   "severity",
   "frequency",
@@ -234,13 +236,23 @@
    "fieldtype": "Select",
    "label": "Frequency",
    "options": "Rare/First Time\nOccasionally Frequent\nConstantly Frequent or Almost Daily"
+  },
+  {
+   "fieldname": "location_info_section",
+   "fieldtype": "Section Break",
+   "label": "Location Info"
+  },
+  {
+   "fieldname": "incident_information_section",
+   "fieldtype": "Section Break",
+   "label": "Incident Information"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-30 17:50:35.456092",
- "modified_by": "Administrator",
+ "modified": "2026-02-02 10:27:20.281946",
+ "modified_by": "admin@admin.com",
  "module": "Ews",
  "name": "EWS Report",
  "naming_rule": "Expression",
