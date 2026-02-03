@@ -20,6 +20,16 @@
   "name": "raw"
  },
  {
+  "administrative_site": "Al-Ba'aj",
+  "data_ckdw": "Nineveh",
+  "district_name": "تجربة",
+  "district_name_arabic": null,
+  "docstatus": 0,
+  "doctype": "District",
+  "modified": "2026-02-03 13:26:02.482073",
+  "name": "تجربة"
+ },
+ {
   "administrative_site": "Tel Abta",
   "data_ckdw": "Nineveh",
   "district_name": "test",
