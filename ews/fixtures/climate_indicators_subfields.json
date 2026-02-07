@@ -435,10 +435,10 @@
   "climate_indicators": "Deterioration of Date Palms or Orchards (Salinity/Drought/Pests)",
   "docstatus": 0,
   "doctype": "Climate Indicators Subfields",
-  "modified": "2026-01-21 16:02:51.046912",
+  "modified": "2026-02-07 11:38:13.300297",
   "name": "Significant damage to $\\ge$ 30% of orchard01",
   "province": "Basrah",
-  "standard": "Significant damage to $\\ge$ 30% of orchard"
+  "standard": "Significant damage to ge 30% of orchard"
  },
  {
   "climate_indicators": "Deterioration of Date Palms or Orchards (Salinity/Drought/Pests)",
