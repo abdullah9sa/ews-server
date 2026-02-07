@@ -5,7 +5,7 @@ from typing import Dict, List, Any, Optional
 # Configuration constants for field visibility and access control
 # These can be easily modified to control which fields are read-only or hidden
 READONLY_FIELDS = set({"province","longitude","latitude"})  # Fields that should always be read-only (e.g., {"creation", "modified_by"})
-HIDDEN_FIELDS = set({"province","whatsapp_status","observer","creation", "modified_by"})    # Fields that should be hidden from the API (e.g., {"internal_notes"})
+HIDDEN_FIELDS = set({"image_2","ai_severity","province","whatsapp_status","accuracy","altitude","observer","creation", "modified_by"})    # Fields that should be hidden from the API (e.g., {"internal_notes"})
 
 # Configuration for response dependencies
 # Maps child field names to their dependency configuration

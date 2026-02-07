@@ -25,7 +25,6 @@
   "tab2_tab",
   "incident_information_section",
   "report_timing",
-  "severity",
   "frequency",
   "section_break_enik",
   "report_type",
@@ -39,6 +38,8 @@
   "details_tab",
   "section_break_dolf",
   "column_break_vsnu",
+  "severity",
+  "ai_severity",
   "image",
   "image_2",
   "audio",
@@ -246,12 +247,19 @@
    "fieldname": "incident_information_section",
    "fieldtype": "Section Break",
    "label": "Incident Information"
+  },
+  {
+   "fieldname": "ai_severity",
+   "fieldtype": "Select",
+   "label": "AI Severity",
+   "options": "Low\nModerate\nHigh\nCritical",
+   "translatable": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-02-02 10:27:20.281946",
+ "modified": "2026-02-07 14:58:24.199168",
  "modified_by": "admin@admin.com",
  "module": "Ews",
  "name": "EWS Report",
