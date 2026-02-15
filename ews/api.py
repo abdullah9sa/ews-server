@@ -827,23 +827,29 @@ def get_dashboard_stats(language: str = "ar") -> Dict[str, Any]:
 		user = frappe.session.user
 		today = nowdate()
 		last_week = add_days(today, -7)
+
+		filters = {}
+		user_province = _get_user_province()
+
+		if user_province:
+			filters["province"] = user_province
+		else:
+			filters["owner"] = user
 		
 		# Reports last week (last 7 days)
-		last_week_count = frappe.db.count("EWS Report", {
-			"owner": user,
-			"creation": [">=", last_week]
-		})
+		last_week_filters = filters.copy()
+		last_week_filters["creation"] = [">=", last_week]
+		last_week_count = frappe.db.count("EWS Report", last_week_filters)
 		
 		# Reports today
-		today_count = frappe.db.count("EWS Report", {
-			"owner": user,
-			"creation": [">=", today]
-		})
+		today_filters = filters.copy()
+		today_filters["creation"] = [">=", today]
+		today_count = frappe.db.count("EWS Report", today_filters)
 		
 		# Recent 5 reports
 		# Using get_list with * fetches all columns in the main table
 		recent_reports = frappe.get_list("EWS Report", 
-			filters={"owner": user},
+			filters=filters,
 			fields=["*"],
 			order_by="creation desc",
 			limit=5
@@ -875,8 +881,16 @@ def get_user_report_history(limit: int = 20, language: str = "ar") -> List[Dict[
 		language (str): Language code ('ar' for Arabic, 'en' for English)
 	"""
 	try:
+		filters = {}
+		user_province = _get_user_province()
+		
+		if user_province:
+			filters["province"] = user_province
+		else:
+			filters["owner"] = frappe.session.user
+
 		reports = frappe.get_list("EWS Report", 
-			filters={"owner": frappe.session.user},
+			filters=filters,
 			fields=["*"],
 			order_by="creation desc",
 			limit_page_length=int(limit)
@@ -904,8 +918,7 @@ def _translate_report_list(reports: List[Dict[str, Any]], language: str = "ar") 
 	# Link fields relying on frappe translation (translatable=1)
 	# Assumes names are translated in the system
 	standard_link_fields = [
-		"administrative_site", "climate_indicators", "conflict_indicators", 
-		"standard", "conflict_threshold"
+		"administrative_site", "climate_indicators", "conflict_indicators"
 	]
 
 	for report in reports:
@@ -918,8 +931,25 @@ def _translate_report_list(reports: List[Dict[str, Any]], language: str = "ar") 
 		for field in standard_link_fields:
 			if report.get(field):
 				report[field] = frappe._(report[field], lang=language)
+		
+		# 3. Translate Subfield Links (standard, conflict_threshold)
+		# These have autonames with suffixes (e.g. "Text01"), so we must fetch the raw text field
+		if report.get("standard"):
+			standard_val = frappe.db.get_value("Climate Indicators Subfields", report["standard"], "standard")
+			if standard_val:
+				report["standard"] = frappe._(standard_val, lang=language)
+			else:
+				# Fallback if lookup fails (unlikely)
+				report["standard"] = frappe._(report["standard"], lang=language)
+
+		if report.get("conflict_threshold"):
+			threshold_val = frappe.db.get_value("Conflict Sub-fields", report["conflict_threshold"], "threshold")
+			if threshold_val:
+				report["conflict_threshold"] = frappe._(threshold_val, lang=language)
+			else:
+				report["conflict_threshold"] = frappe._(report["conflict_threshold"], lang=language)
 				
-		# 3. Translate Fields with Special Arabic Columns
+		# 4. Translate Fields with Special Arabic Columns
 		
 		# Province -> province_name_arabic
 		if report.get("province"):

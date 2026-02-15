@@ -20,8 +20,6 @@
   "longitude",
   "column_break_uncg",
   "location",
-  "section_break_pylx",
-  "whatsapp_status",
   "tab2_tab",
   "incident_information_section",
   "report_timing",
@@ -215,16 +213,6 @@
    "precision": "9"
   },
   {
-   "fieldname": "section_break_pylx",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "whatsapp_status",
-   "fieldtype": "Select",
-   "label": "Whatsapp Status",
-   "options": "Not Sent\nSent\nError"
-  },
-  {
    "fieldname": "section_break_cfmk",
    "fieldtype": "Section Break"
   },
@@ -259,7 +247,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-02-07 14:58:24.199168",
+ "modified": "2026-02-15 12:58:02.637333",
  "modified_by": "admin@admin.com",
  "module": "Ews",
  "name": "EWS Report",
