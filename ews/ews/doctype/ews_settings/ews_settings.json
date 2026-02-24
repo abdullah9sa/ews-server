@@ -5,21 +5,61 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "about_app_text"
+  "about_app_text",
+  "twilio_settings_section",
+  "twilio_account_sid",
+  "twilio_auth_token",
+  "twilio_column_break",
+  "twilio_whatsapp_number",
+  "otp_expiry_minutes"
  ],
  "fields": [
   {
    "fieldname": "about_app_text",
    "fieldtype": "Text",
    "label": "About App Text"
+  },
+  {
+   "fieldname": "twilio_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Twilio WhatsApp OTP Settings"
+  },
+  {
+   "description": "Your Twilio Account SID from the Twilio Console Dashboard",
+   "fieldname": "twilio_account_sid",
+   "fieldtype": "Data",
+   "label": "Twilio Account SID"
+  },
+  {
+   "description": "Your Twilio Auth Token (stored encrypted)",
+   "fieldname": "twilio_auth_token",
+   "fieldtype": "Data",
+   "label": "Twilio Auth Token"
+  },
+  {
+   "fieldname": "twilio_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Your Twilio WhatsApp-enabled number with country code (e.g., +14155238886)",
+   "fieldname": "twilio_whatsapp_number",
+   "fieldtype": "Data",
+   "label": "Twilio WhatsApp Number"
+  },
+  {
+   "default": "5",
+   "description": "How many minutes before an OTP expires. Default: 5",
+   "fieldname": "otp_expiry_minutes",
+   "fieldtype": "Int",
+   "label": "OTP Expiry (Minutes)"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2026-01-25 19:48:13.850802",
- "modified_by": "Administrator",
+ "modified": "2026-02-24 13:05:13.497895",
+ "modified_by": "admin@admin.com",
  "module": "Ews",
  "name": "EWS Settings",
  "owner": "Administrator",

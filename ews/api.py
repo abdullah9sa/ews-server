@@ -727,87 +727,9 @@ def _attach_recursive_dependencies(parent_fieldname: str, options: List[Dict[str
 		return None
 
 
-@frappe.whitelist(allow_guest=True)
-def register_reporter(full_name: str, email: str, province: str, password: str) -> Dict[str, Any]:
-	"""
-	Register a new reporter user.
-	
-	Args:
-		full_name (str): Full name of the user
-		email (str): Email address (login ID)
-		province (str): Province name
-		password (str): User's password (weak passwords allowed)
-		
-	Returns:
-		dict: Success message or error
-	"""
-	try:
-		if frappe.db.exists("User", email):
-			frappe.throw(_("User with email {0} already exists").format(email))
-		
-		# Disable strong password policy for registration
-		frappe.flags.ignore_password_policy = True
-		
-		# Create User document
-		user = frappe.new_doc("User")
-		user.first_name = full_name
-		user.email = email
-		user.enabled = 0  # Disabled by default as requested
-		user.new_password = password
-		
-		# Construct role name dynamically based on province
-		# e.g., "Nineveh Reporter", "Basrah Reporter"
-		role_name = f"{province} Reporter"
-		
-		# Verify role exists
-		if not frappe.db.exists("Role", role_name):
-			# Fallback or error? User requested "X Reporter" based on Province.
-			# If the role doesn't exist, we might want to log it or throw.
-			# For now, let's try to add it, but if it fails, the user created without the role needs attention.
-			# Better to check beforehand.
-			pass # We will try to add it anyway, frappe users usually have roles added via append
-			
-		user.append("roles", {
-			"role": role_name
-		})
-		
-		# Also potentially add a basic role like "Blogger" or "Website User" if needed?
-		# User strictly asked for "X Reporter".
-		
-		user.save(ignore_permissions=True)
-		
-		return {
-			"status": "success",
-			"message": _("User registered successfully. Please wait for admin approval."),
-			"user": email
-		}
-		
-	except Exception as e:
-		frappe.log_error(f"Error registering user: {str(e)}")
-		frappe.throw(_("Error registering user: {0}").format(str(e)))
-	finally:
-		# Reset password policy flag
-		frappe.flags.ignore_password_policy = False
 
+# NOTE: register_reporter and get_public_provinces have been moved to ews.auth_api
 
-@frappe.whitelist(allow_guest=True)
-def get_public_provinces() -> List[Dict[str, Any]]:
-	"""
-	Get all provinces. Publicly accessible.
-	
-	Returns:
-		list: List of Province documents
-	"""
-	try:
-		provinces = frappe.db.get_list(
-			"Province",
-			fields=["*"],
-			order_by="name asc"
-		)
-		return provinces
-	except Exception as e:
-		frappe.log_error(f"Error fetching provinces: {str(e)}")
-		return []
 
 
 @frappe.whitelist()
