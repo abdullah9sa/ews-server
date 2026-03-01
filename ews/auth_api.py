@@ -120,7 +120,7 @@ def register_reporter(
         user.email = email
         user.phone = phone_number
         user.location = address.strip() if address else ""
-        user.enabled = 0  # Disabled until OTP verification
+        user.enabled = 1  # DEV: auto-enabled (OTP disabled)
         user.new_password = password
 
         # Construct role name based on province (e.g., "Nineveh Reporter")
@@ -327,6 +327,7 @@ def send_otp(email: str) -> Dict[str, Any]:
     Returns:
         dict: Status message
     """
+    # DEV MODE: OTP and Twilio disabled — dummy OTP, no WhatsApp sending
     try:
         if not email or not email.strip():
             frappe.throw(_("Email is required"))
@@ -337,37 +338,13 @@ def send_otp(email: str) -> Dict[str, Any]:
         if not frappe.db.exists("User", email):
             frappe.throw(_("No account found with this email address."))
 
-        # Get user's phone number
-        phone_number = frappe.db.get_value("User", email, "phone")
-        if not phone_number:
-            frappe.throw(_("No phone number found for this account. Please contact support."))
-
-        # Rate limiting: prevent sending OTP too frequently
-        rate_key = f"ews_otp_rate:{email}"
-        last_sent = frappe.cache.get_value(rate_key)
-        if last_sent:
-            frappe.throw(_("Please wait before requesting another OTP."))
-
-        # Generate OTP
-        settings = _get_twilio_settings()
-        otp = _generate_otp()
-
-        # Store OTP
-        _store_otp(email, otp, settings["otp_expiry_minutes"])
-
-        # Send via WhatsApp
-        _send_whatsapp_otp(phone_number, otp)
-
-        # Set rate limit (60 seconds between sends)
-        frappe.cache.set_value(rate_key, True, expires_in_sec=60)
-
-        # Mask phone for response
-        masked_phone = phone_number[:4] + "****" + phone_number[-3:]
+        # Store a fixed dummy OTP (any OTP will be accepted anyway)
+        _store_otp(email, "123456", 10)
 
         return {
             "status": "success",
-            "message": _("OTP sent to your WhatsApp ({0})").format(masked_phone),
-            "expires_in_minutes": settings["otp_expiry_minutes"],
+            "message": _("OTP sent (dev mode: use any code)"),
+            "expires_in_minutes": 10,
         }
 
     except frappe.ValidationError:
@@ -393,26 +370,18 @@ def verify_otp(email: str, otp: str) -> Dict[str, Any]:
     Returns:
         dict: Verification result with login credentials if successful
     """
+    # DEV MODE: any OTP is accepted as valid
     try:
         if not email or not email.strip():
             frappe.throw(_("Email is required"))
-        if not otp or not otp.strip():
-            frappe.throw(_("OTP is required"))
 
         email = email.strip().lower()
-        otp = otp.strip()
 
         # Check user exists
         if not frappe.db.exists("User", email):
             frappe.throw(_("No account found with this email address."))
 
-        # Verify OTP
-        result = _verify_stored_otp(email, otp)
-
-        if not result["valid"]:
-            frappe.throw(result["message"])
-
-        # OTP verified — activate the account
+        # DEV: skip OTP verification, just activate
         frappe.db.set_value("User", email, "enabled", 1)
         frappe.db.commit()
 

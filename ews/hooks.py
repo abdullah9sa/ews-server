@@ -4,6 +4,12 @@ app_publisher = "AbdullahSalih"
 app_description = "EWS"
 app_email = "abdullahalsalih@gmail.com"
 app_license = "mit"
+
+# Flutter SPA Page Renderer
+page_renderer = [
+	"ews.mobile_spa.MobileSPARenderer",
+]
+
 # Fixtures
 fixtures = [
     {
