@@ -1,6 +1,6 @@
 {
-    "name": "ews_app",
-    "short_name": "ews_app",
+    "name": "Narsud - نرصد",
+    "short_name": "Narsud",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
