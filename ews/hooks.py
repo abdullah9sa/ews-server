@@ -239,7 +239,7 @@ website_route_rules = [
 
 # Request Events
 # ----------------
-# before_request = ["ews.utils.before_request"]
+before_request = ["ews.account_deletion.bypass_csrf_for_deletion"]
 # after_request = ["ews.utils.after_request"]
 
 # Job Events

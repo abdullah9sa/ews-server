@@ -7,6 +7,32 @@
   "docstatus": 0,
   "doctype": "Translation",
   "language": "ar",
+  "modified": "2026-02-03 14:49:19.374714",
+  "name": "hrp4b7t09u",
+  "source_text": "Al-Midaina",
+  "translated_text": "المدينة"
+ },
+ {
+  "context": null,
+  "contributed": 0,
+  "contribution_docname": null,
+  "contribution_status": "",
+  "docstatus": 0,
+  "doctype": "Translation",
+  "language": "ar",
+  "modified": "2026-02-03 14:50:16.237447",
+  "name": "idil00dt1i",
+  "source_text": "Conflict Threshold",
+  "translated_text": "المعيار"
+ },
+ {
+  "context": null,
+  "contributed": 0,
+  "contribution_docname": null,
+  "contribution_status": "",
+  "docstatus": 0,
+  "doctype": "Translation",
+  "language": "ar",
   "modified": "2026-01-24 13:27:09.440144",
   "name": "c76n8r55hp",
   "source_text": "Al-Ba'aj",
@@ -2364,5 +2390,44 @@
   "name": "lm7ihs7pm4",
   "source_text": "Repeated incidents within a week",
   "translated_text": "تصعيد / تهديدات خطيرة"
+ },
+ {
+  "context": null,
+  "contributed": 0,
+  "contribution_docname": null,
+  "contribution_status": "",
+  "docstatus": 0,
+  "doctype": "Translation",
+  "language": "ar",
+  "modified": "2026-03-07 12:27:38.661514",
+  "name": "mrauff7s6q",
+  "source_text": "Affected Groups",
+  "translated_text": "الفئات المتأثرة بالحالة"
+ },
+ {
+  "context": null,
+  "contributed": 0,
+  "contribution_docname": null,
+  "contribution_status": "",
+  "docstatus": 0,
+  "doctype": "Translation",
+  "language": "ar",
+  "modified": "2026-03-07 12:27:57.188584",
+  "name": "n1386vpsqu",
+  "source_text": "Participated Groups",
+  "translated_text": "الفئات المشاركة بالحالة"
+ },
+ {
+  "context": null,
+  "contributed": 0,
+  "contribution_docname": null,
+  "contribution_status": "",
+  "docstatus": 0,
+  "doctype": "Translation",
+  "language": "ar",
+  "modified": "2026-03-07 12:28:12.792341",
+  "name": "n5v95genf4",
+  "source_text": "Most Affected Groups",
+  "translated_text": "الفئات الاشد تأثراً بالحالة"
  }
 ]

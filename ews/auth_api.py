@@ -45,6 +45,7 @@ from typing import Dict, List, Any, Optional
 import random
 import string
 from datetime import datetime, timedelta
+import requests
 
 
 # ─────────────────────────────────────────────────
@@ -120,7 +121,7 @@ def register_reporter(
         user.email = email
         user.phone = phone_number
         user.location = address.strip() if address else ""
-        user.enabled = 1  # DEV: auto-enabled (OTP disabled)
+        user.enabled = 0  # Requires OTP to enable
         user.new_password = password
 
         # Construct role name based on province (e.g., "Nineveh Reporter")
@@ -163,102 +164,43 @@ def _generate_otp(length: int = 6) -> str:
     return "".join(random.choices(string.digits, k=length))
 
 
-def _get_twilio_settings() -> Dict[str, Any]:
+def _send_standingtech_otp(phone_number: str) -> Optional[str]:
     """
-    Read Twilio credentials from EWS Settings.
+    Send OTP via StandingTech API.
+    Returns the generated OTP if successful, else None.
+    """
+    url = "https://gateway.standingtech.com/api/v5/otp/send"
+    headers = {
+        "Authorization": "Bearer 695|af51ce7f78a94e970ca905678656e593b17f676bbb970b591c3ae7c560d60f70 ",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    }
 
-    Returns:
-        dict with keys: account_sid, auth_token, whatsapp_number, otp_expiry_minutes
-    """
+    # Clean phone number (remove positive sign if present)
+    clean_phone = phone_number.replace("+", "").strip()
+
+    payload = {
+        "recipient": clean_phone,
+        "sender_id": "TigrisSol",
+        "channel": "whatsapp",
+        "message": "auto",
+        "fallback": "sms",
+        "lang": "ar"
+    }
+
     try:
-        settings = frappe.get_single("EWS Settings")
-        account_sid = settings.get("twilio_account_sid")
-        # Auth token is stored as Data field, not Password
-        auth_token = settings.get("twilio_auth_token")
-        whatsapp_number = settings.get("twilio_whatsapp_number")
-        otp_expiry = settings.get("otp_expiry_minutes") or 5
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        res_data = response.json()
 
-        if not account_sid or not auth_token or not whatsapp_number:
-            frappe.throw(_("Twilio settings are not configured. Please contact the administrator."))
-
-        # Normalize whatsapp number — strip "whatsapp:" prefix if user added it
-        whatsapp_number = whatsapp_number.replace("whatsapp:", "").strip()
-
-        return {
-            "account_sid": account_sid,
-            "auth_token": auth_token,
-            "whatsapp_number": whatsapp_number,
-            "otp_expiry_minutes": int(otp_expiry),
-        }
-    except frappe.DoesNotExistError:
-        frappe.throw(_("EWS Settings not found. Please configure Twilio settings."))
-    except frappe.ValidationError:
-        raise
+        if res_data.get("status") == "success":
+            return str(res_data.get("data", {}).get("message"))
+        else:
+            frappe.log_error(f"OTP API Error: {res_data}", "StandingTech OTP Error")
+            return None
     except Exception as e:
-        frappe.log_error(f"Error reading Twilio settings: {str(e)}", "Twilio Config Error")
-        frappe.throw(_("Error reading Twilio configuration: {0}").format(str(e)))
-
-
-def _send_whatsapp_otp(phone_number: str, otp: str) -> bool:
-    """
-    Send OTP via Twilio WhatsApp API.
-
-    Args:
-        phone_number: Recipient phone number with country code
-        otp: The OTP string to send
-
-    Returns:
-        True if message was sent successfully
-    """
-    try:
-        from twilio.rest import Client
-    except ImportError:
-        frappe.throw(_(
-            "Twilio SDK is not installed. "
-            "Run: pip install twilio"
-        ))
-
-    settings = _get_twilio_settings()
-
-    try:
-        client = Client(settings["account_sid"], settings["auth_token"])
-
-        from_number = f"whatsapp:{settings['whatsapp_number']}"
-        to_number = f"whatsapp:{phone_number}"
-
-        frappe.logger().info(
-            f"Twilio WhatsApp: Sending OTP from={from_number} to={to_number}"
-        )
-
-        message = client.messages.create(
-            body=f"Your EWS verification code is: {otp}\n\nThis code expires in {settings['otp_expiry_minutes']} minutes.",
-            from_=from_number,
-            to=to_number,
-        )
-
-        # Log detailed message info for debugging
-        frappe.log_error(
-            f"WhatsApp OTP Message Details:\n"
-            f"  SID: {message.sid}\n"
-            f"  Status: {message.status}\n"
-            f"  From: {from_number}\n"
-            f"  To: {to_number}\n"
-            f"  Error Code: {message.error_code}\n"
-            f"  Error Message: {message.error_message}",
-            "Twilio WhatsApp Debug"
-        )
-
-        return True
-
-    except Exception as e:
-        frappe.log_error(
-            f"Failed to send WhatsApp OTP to {phone_number}: {str(e)}\n"
-            f"From: whatsapp:{settings['whatsapp_number']}\n"
-            f"To: whatsapp:{phone_number}",
-            "Twilio WhatsApp Error"
-        )
-        frappe.throw(_("Failed to send OTP. Please try again later."))
-        return False
+        frappe.log_error(f"Failed to send StandingTech OTP to {phone_number}: {str(e)}", "StandingTech OTP Error")
+        return None
 
 
 def _store_otp(email: str, otp: str, expiry_minutes: int = 5) -> None:
@@ -327,7 +269,6 @@ def send_otp(email: str) -> Dict[str, Any]:
     Returns:
         dict: Status message
     """
-    # DEV MODE: OTP and Twilio disabled — dummy OTP, no WhatsApp sending
     try:
         if not email or not email.strip():
             frappe.throw(_("Email is required"))
@@ -335,15 +276,24 @@ def send_otp(email: str) -> Dict[str, Any]:
         email = email.strip().lower()
 
         # Check user exists
-        if not frappe.db.exists("User", email):
+        user = frappe.db.get_value("User", email, ["name", "phone"], as_dict=True)
+        if not user:
             frappe.throw(_("No account found with this email address."))
 
-        # Store a fixed dummy OTP (any OTP will be accepted anyway)
-        _store_otp(email, "123456", 10)
+        phone_number = user.phone
+        if not phone_number:
+            frappe.throw(_("No phone number registered for this account."))
+
+        otp_val = _send_standingtech_otp(phone_number)
+        if not otp_val:
+            frappe.throw(_("Failed to send OTP to your Whatsapp. Please try again later."))
+
+        # Store the OTP internally with 10 minute expiry
+        _store_otp(email, otp_val, 10)
 
         return {
             "status": "success",
-            "message": _("OTP sent (dev mode: use any code)"),
+            "message": _("OTP sent successfully to your WhatsApp"),
             "expires_in_minutes": 10,
         }
 
@@ -370,10 +320,11 @@ def verify_otp(email: str, otp: str) -> Dict[str, Any]:
     Returns:
         dict: Verification result with login credentials if successful
     """
-    # DEV MODE: any OTP is accepted as valid
     try:
         if not email or not email.strip():
             frappe.throw(_("Email is required"))
+        if not otp or not otp.strip():
+            frappe.throw(_("OTP is required"))
 
         email = email.strip().lower()
 
@@ -381,7 +332,12 @@ def verify_otp(email: str, otp: str) -> Dict[str, Any]:
         if not frappe.db.exists("User", email):
             frappe.throw(_("No account found with this email address."))
 
-        # DEV: skip OTP verification, just activate
+        # Verify OTP using the cache
+        verify_res = _verify_stored_otp(email, otp)
+        if not verify_res["valid"]:
+            frappe.throw(verify_res["message"])
+
+        # OTP is valid, enable the user account
         frappe.db.set_value("User", email, "enabled", 1)
         frappe.db.commit()
 

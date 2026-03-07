@@ -9,6 +9,16 @@ import frappe
 from frappe import _
 
 
+def bypass_csrf_for_deletion():
+    """Skip CSRF validation for the account deletion endpoint (guest form)."""
+    if (
+        frappe.request
+        and frappe.request.method == "POST"
+        and frappe.request.path == "/api/method/ews.account_deletion.request_account_deletion"
+    ):
+        frappe.flags.ignore_csrf = True
+
+
 @frappe.whitelist(allow_guest=True, methods=["POST"])
 def request_account_deletion(full_name: str, email: str, phone: str, reason: str = ""):
     """
@@ -26,8 +36,6 @@ def request_account_deletion(full_name: str, email: str, phone: str, reason: str
     Returns:
         dict: Success message
     """
-    # Skip CSRF for this guest endpoint (static HTML page, no Jinja template)
-    frappe.flags.ignore_csrf = True
     # Basic validation
     if not full_name or not full_name.strip():
         frappe.throw(_("Full name is required."), frappe.ValidationError)

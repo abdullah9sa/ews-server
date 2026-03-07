@@ -750,28 +750,24 @@ def get_dashboard_stats(language: str = "ar") -> Dict[str, Any]:
 		today = nowdate()
 		last_week = add_days(today, -7)
 
-		filters = {}
-		user_province = _get_user_province()
-
-		if user_province:
-			filters["province"] = user_province
-		else:
-			filters["owner"] = user
+		stats_filters = {}
 		
 		# Reports last week (last 7 days)
-		last_week_filters = filters.copy()
+		last_week_filters = stats_filters.copy()
 		last_week_filters["creation"] = [">=", last_week]
 		last_week_count = frappe.db.count("EWS Report", last_week_filters)
 		
 		# Reports today
-		today_filters = filters.copy()
+		today_filters = stats_filters.copy()
 		today_filters["creation"] = [">=", today]
 		today_count = frappe.db.count("EWS Report", today_filters)
 		
-		# Recent 5 reports
+		# Recent 5 reports (only user's history)
+		history_filters = {"owner": user}
+		
 		# Using get_list with * fetches all columns in the main table
 		recent_reports = frappe.get_list("EWS Report", 
-			filters=filters,
+			filters=history_filters,
 			fields=["*"],
 			order_by="creation desc",
 			limit=5
@@ -803,13 +799,7 @@ def get_user_report_history(limit: int = 20, language: str = "ar") -> List[Dict[
 		language (str): Language code ('ar' for Arabic, 'en' for English)
 	"""
 	try:
-		filters = {}
-		user_province = _get_user_province()
-		
-		if user_province:
-			filters["province"] = user_province
-		else:
-			filters["owner"] = frappe.session.user
+		filters = {"owner": frappe.session.user}
 
 		reports = frappe.get_list("EWS Report", 
 			filters=filters,

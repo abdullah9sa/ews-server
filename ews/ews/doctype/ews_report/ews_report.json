@@ -28,8 +28,11 @@
   "report_type",
   "climate_indicators",
   "standard",
+  "affected_groups",
   "conflict_indicators",
   "conflict_threshold",
+  "participated_groups",
+  "most_affected_groups",
   "column_break_hqjj",
   "section_break_cfmk",
   "extra_details",
@@ -242,12 +245,29 @@
    "label": "AI Severity",
    "options": "Low\nModerate\nHigh\nCritical",
    "translatable": 1
+  },
+  {
+   "depends_on": "eval:(doc.report_type == \"Climate / Water / Environment\" )",
+   "fieldname": "affected_groups",
+   "fieldtype": "Data",
+   "label": "Affected Groups"
+  },
+  {
+   "depends_on": "eval:(doc.report_type == \"Conflict / Social Tension\" )",
+   "fieldname": "participated_groups",
+   "fieldtype": "Data",
+   "label": "Participated Groups"
+  },
+  {
+   "fieldname": "most_affected_groups",
+   "fieldtype": "Data",
+   "label": "Most Affected Groups"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-02-15 12:58:02.637333",
+ "modified": "2026-03-07 12:21:40.807074",
  "modified_by": "admin@admin.com",
  "module": "Ews",
  "name": "EWS Report",
