@@ -729,6 +729,8 @@ def _attach_recursive_dependencies(parent_fieldname: str, options: List[Dict[str
 
 
 # NOTE: register_reporter and get_public_provinces have been moved to ews.auth_api
+# Re-exported here to maintain the same API endpoints for the Flutter mobile app
+from ews.auth_api import register_reporter, send_otp, verify_otp, login, get_public_provinces
 
 
 
