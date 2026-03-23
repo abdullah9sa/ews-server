@@ -443,10 +443,20 @@ def _get_link_options(link_doctype: str, excluded: set, language: str = "ar") ->
 		elif link_doctype == "Province":
 			return _get_province_options_for_user(excluded, language)
 		
-		# Climate/Conflict indicators are now handled by _get_link_options_with_children
-		# via RESPONSE_DEPENDENCIES config in _build_field_data
+		elif link_doctype in ["Climate Indicators", "Conflict Indicators"]:
+			accessible_provinces = _get_accessible_province_names()
+			if not accessible_provinces:
+				return []
+				
+			records = frappe.db.get_list(
+				link_doctype,
+				fields=["name"],
+				filters=[["province", "in", accessible_provinces + [""]]],
+				limit_page_length=500,
+				ignore_permissions=True
+			)
+			return [{"value": r["name"], "label": _translate_text(r["name"], language)} for r in records]
 
-		
 		elif link_doctype == "Administrative Site":
 			# Return expanded admin sites with nested districts
 			# Filtered by user's default province
@@ -473,39 +483,28 @@ def _get_link_options(link_doctype: str, excluded: set, language: str = "ar") ->
 
 def _get_province_options_for_user(excluded: set, language: str = "ar") -> List[Dict[str, Any]]:
 	"""
-	Get provinces available to current user based on their roles.
-	
-	Filters provinces where user has the role specified in province's role field.
-	Only returns provinces where user has matching role. If no role is required on a province,
-	that province is NOT shown (role-based access is enforced).
+	Get provinces available to current user based on User Provinces mapping.
 	"""
 	try:
-		current_user = frappe.session.user
-		user_roles = frappe.get_roles(current_user)
-		# Get all provinces with their required roles
+		accessible_provinces = _get_accessible_province_names()
+		
+		if not accessible_provinces:
+			return []
+			
 		provinces = frappe.db.get_list(
 			"Province",
-			fields=["name", "role"],
+			fields=["name"],
+			filters={"name": ["in", accessible_provinces]},
 			order_by="name asc"
 		)
 		
 		available_provinces = []
 		for province in provinces:
 			province_name = province["name"]
-			required_role = province.get("role")
-			
-			# Show province if:
-			# 1. User is Administrator/System Manager
-			# 2. No role is defined (Public)
-			# 3. User has the specific required role
-			if ("Administrator" in user_roles or "System Manager" in user_roles) or \
-			   (not required_role) or \
-			   (required_role in user_roles):
-				available_provinces.append({
-					"value": province_name,
-					"label": _translate_text(province_name, language),
-					"required_role": required_role
-				})
+			available_provinces.append({
+				"value": province_name,
+				"label": _translate_text(province_name, language)
+			})
 		
 		return available_provinces
 	
@@ -516,7 +515,7 @@ def _get_province_options_for_user(excluded: set, language: str = "ar") -> List[
 
 def _get_accessible_province_names() -> List[str]:
 	"""
-	Get list of province names that current user has access to.
+	Get list of province names that current user has access to based on User Provinces mapping.
 	
 	Returns:
 		List of province names user can access
@@ -525,22 +524,17 @@ def _get_accessible_province_names() -> List[str]:
 		current_user = frappe.session.user
 		user_roles = frappe.get_roles(current_user)
 		
-		# Get all provinces with their required roles
-		provinces = frappe.db.get_list(
-			"Province",
-			fields=["name", "role"],
+		if "Administrator" in user_roles or "System Manager" in user_roles:
+			return frappe.db.get_list("Province", pluck="name")
+			
+		mapped_provinces = frappe.db.get_list(
+			"EWS User Province",
+			filters={"user": current_user, "parent": "User Provinces"},
+			pluck="province",
+			ignore_permissions=True
 		)
 		
-		accessible_provinces = []
-		for province in provinces:
-			required_role = province.get("role")
-			# Same logic as _get_province_options_for_user
-			if ("Administrator" in user_roles or "System Manager" in user_roles) or \
-			   (not required_role) or \
-			   (required_role in user_roles):
-				accessible_provinces.append(province["name"])
-		
-		return accessible_provinces
+		return list(set(mapped_provinces))
 	
 	except Exception as e:
 		frappe.log_error(f"Error getting accessible provinces: {str(e)}")
@@ -954,18 +948,22 @@ def get_current_user_info() -> Dict[str, Any]:
 
 def _get_user_province(user_email: str = None) -> Optional[str]:
 	"""
-	Get the province associated with the user's role.
-	Roles follow pattern "Province_Name Reporter".
+	Get the primary province associated with the user via User Provinces mapping.
 	"""
 	try:
 		if not user_email:
 			user_email = frappe.session.user
 			
-		user_roles = frappe.get_roles(user_email)
+		mapped_provinces = frappe.db.get_list(
+			"EWS User Province",
+			filters={"user": user_email, "parent": "User Provinces"},
+			pluck="province",
+			limit=1,
+			ignore_permissions=True
+		)
 		
-		for role in user_roles:
-			if role.endswith(" Reporter"):
-				return role.replace(" Reporter", "")
+		if mapped_provinces:
+			return mapped_provinces[0]
 				
 		return None
 	except Exception as e:

@@ -19,3 +19,42 @@ class EWSReport(Document):
 				}).insert(ignore_permissions=True)
 
 		super()._validate_links()
+
+
+def get_permission_query_conditions(user):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+	
+	if "Administrator" in user_roles or "System Manager" in user_roles:
+		return None
+		
+	mapped_provinces = frappe.db.get_list(
+		"EWS User Province",
+		filters={"user": user, "parent": "User Provinces"},
+		pluck="province"
+	)
+	
+	if not mapped_provinces:
+		return "1=0"
+		
+	mapped_provinces_quoted = ", ".join(frappe.db.escape(p) for p in mapped_provinces)
+	return f"`tabEWS Report`.province in ({mapped_provinces_quoted})"
+
+
+def has_permission(doc, user=None, ptype="read"):
+	if not user: user = frappe.session.user
+	user_roles = frappe.get_roles(user)
+	
+	if "Administrator" in user_roles or "System Manager" in user_roles:
+		return True
+		
+	mapped_provinces = frappe.db.get_list(
+		"EWS User Province",
+		filters={"user": user, "parent": "User Provinces"},
+		pluck="province"
+	)
+	
+	if doc.province in mapped_provinces:
+		return True
+		
+	return False

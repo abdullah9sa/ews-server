@@ -124,19 +124,31 @@ def register_reporter(
         user.enabled = 0  # Requires OTP to enable
         user.new_password = password
 
-        # Construct role name based on province (e.g., "Nineveh Reporter")
-        role_name = f"{province} Reporter"
+        # Assign the user to the single "Reporter" role
+        role_name = "Reporter"
 
         # Verify role exists
         if not frappe.db.exists("Role", role_name):
             frappe.log_error(
-                f"Role '{role_name}' does not exist. Creating user without province role.",
+                f"Role '{role_name}' does not exist. Creating user without Reporter role.",
                 "Registration Warning"
             )
         else:
             user.append("roles", {"role": role_name})
 
         user.save(ignore_permissions=True)
+        
+        # Link user to their province using User Provinces single doctype
+        user_provinces = frappe.get_doc("User Provinces")
+        # Check if already linked to avoid duplicates
+        existing_link = next((row for row in user_provinces.get("ews_user_province") if row.user == email and row.province == province), None)
+        if not existing_link:
+            user_provinces.append("ews_user_province", {
+                "user": email,
+                "province": province
+            })
+            user_provinces.save(ignore_permissions=True)
+
         frappe.db.commit()
 
         return {

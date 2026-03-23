@@ -35,6 +35,12 @@ fixtures = [
     },
     {
         "dt": "Translation",
+    },
+    {
+        "dt": "Role", ## add filter to only add "Reporter"
+        "filters": {
+            "name": "Reporter"
+        }
     }
 ]
 
