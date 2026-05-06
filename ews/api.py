@@ -137,7 +137,7 @@ def _translate_option_values(options: List[Any], language: str = "ar", keys_to_t
 			result.append(option)
 	return result
 
-@frappe.whitelist(allow_guest=False)
+@frappe.whitelist(allow_guest=True)
 def get_ews_report_form(exclude_fields: Optional[str] = None, language: str = "ar", 
                         readonly_fields: Optional[str] = None, hidden_fields: Optional[str] = None) -> Dict[str, Any]:
 	"""
@@ -728,7 +728,7 @@ from ews.auth_api import register_reporter, send_otp, verify_otp, login, get_pub
 
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_dashboard_stats(language: str = "ar") -> Dict[str, Any]:
 	"""
 	Get dashboard statistics for the current user.
@@ -743,6 +743,7 @@ def get_dashboard_stats(language: str = "ar") -> Dict[str, Any]:
 	
 	try:
 		user = frappe.session.user
+		print("user", user)
 		today = nowdate()
 		last_week = add_days(today, -7)
 
@@ -758,15 +759,21 @@ def get_dashboard_stats(language: str = "ar") -> Dict[str, Any]:
 		today_filters["creation"] = [">=", today]
 		today_count = frappe.db.count("EWS Report", today_filters)
 		
-		# Recent 5 reports (only user's history)
-		history_filters = {"owner": user}
-		
+		# Recent 5 reports
+		if user == "Guest":
+			# Guests see recent submitted reports
+			history_filters = {}
+		else:
+			# Users see their own history
+			history_filters = {"owner": user}
+		print("history_filters", history_filters)
 		# Using get_list with * fetches all columns in the main table
 		recent_reports = frappe.get_list("EWS Report", 
 			filters=history_filters,
 			fields=["*"],
 			order_by="creation desc",
-			limit=5
+			limit=5,
+			ignore_permissions=(user == "Guest")
 		)
 		
 		# Translate reports
@@ -786,7 +793,7 @@ def get_dashboard_stats(language: str = "ar") -> Dict[str, Any]:
 		}
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_user_report_history(limit: int = 20, language: str = "ar") -> List[Dict[str, Any]]:
 	"""
 	Get user report history.
@@ -795,13 +802,19 @@ def get_user_report_history(limit: int = 20, language: str = "ar") -> List[Dict[
 		language (str): Language code ('ar' for Arabic, 'en' for English)
 	"""
 	try:
-		filters = {"owner": frappe.session.user}
+		user = frappe.session.user
+		if user == "Guest":
+			# Guests see all submitted reports
+			filters = {"docstatus": 1}
+		else:
+			filters = {"owner": user}
 
 		reports = frappe.get_list("EWS Report", 
 			filters=filters,
 			fields=["*"],
 			order_by="creation desc",
-			limit_page_length=int(limit)
+			limit_page_length=int(limit),
+			ignore_permissions=(user == "Guest")
 		)
 		return _translate_report_list(reports, language)
 	except Exception as e:
