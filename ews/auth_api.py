@@ -56,24 +56,24 @@ import requests
 def register_reporter(
     full_name: str,
     email: str,
-    province: str,
     password: str,
-    phone_number: str,
+    province: Optional[str] = None,
+    phone_number: Optional[str] = None,
     address: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Register a new reporter user.
 
-    Creates a User document (disabled by default), assigns the province role,
-    and stores phone number and address. After registration, the user must
+    Creates a User document (disabled by default if phone is provided), assigns the province role,
+    and stores phone number and address. After registration, if phone is provided, the user must
     verify their phone via WhatsApp OTP to activate their account.
 
     Args:
         full_name (str): Full name of the user
         email (str): Email address (login ID)
-        province (str): Province name
+        province (str, optional): Province name
         password (str): User's password
-        phone_number (str): Phone number with country code (e.g., +9647XXXXXXXXX)
+        phone_number (str, optional): Phone number with country code (e.g., +9647XXXXXXXXX)
         address (str, optional): Physical address of the reporter
 
     Returns:
@@ -89,15 +89,16 @@ def register_reporter(
             frappe.throw(_("Province is required"))
         if not password:
             frappe.throw(_("Password is required"))
-        if not phone_number or not phone_number.strip():
-            frappe.throw(_("Phone number is required"))
 
         email = email.strip().lower()
-        phone_number = phone_number.strip()
 
-        # Validate phone number format (basic check)
-        if not phone_number.startswith("+"):
-            frappe.throw(_("Phone number must include country code (e.g., +9647XXXXXXXXX)"))
+        if phone_number and phone_number.strip():
+            phone_number = phone_number.strip()
+            # Validate phone number format (basic check)
+            if not phone_number.startswith("+"):
+                frappe.throw(_("Phone number must include country code (e.g., +9647XXXXXXXXX)"))
+        else:
+            phone_number = None
 
         # Check if user already exists
         if frappe.db.exists("User", email):
@@ -119,9 +120,9 @@ def register_reporter(
         user = frappe.new_doc("User")
         user.first_name = full_name.strip()
         user.email = email
-        user.phone = phone_number
+        user.phone = phone_number or ""
         user.location = address.strip() if address else ""
-        user.enabled = 0  # Requires OTP to enable
+        user.enabled = 0 if phone_number else 1  # Requires OTP to enable if phone number is provided, otherwise enabled immediately
         user.new_password = password
 
         # Assign the user to the single "Reporter" role
@@ -151,11 +152,14 @@ def register_reporter(
 
         frappe.db.commit()
 
+        message = _("Registration successful. Please verify your phone number with the OTP sent to your WhatsApp.") if phone_number else _("Registration successful. You can now log in.")
+
         return {
             "status": "success",
-            "message": _("Registration successful. Please verify your phone number with the OTP sent to your WhatsApp."),
+            "message": message,
             "user": email,
             "phone_number": phone_number,
+            "requires_otp": True if phone_number else False,
         }
 
     except frappe.ValidationError:
