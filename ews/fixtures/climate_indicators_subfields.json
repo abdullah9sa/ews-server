@@ -192,27 +192,27 @@
   "climate_indicators": "Clear Damage to Crops, Pastures, or Date Palms",
   "docstatus": 0,
   "doctype": "Climate Indicators Subfields",
-  "modified": "2026-01-21 15:45:38.770424",
+  "modified": "2026-05-29 10:58:24.319241",
   "name": "Apparent damage/production loss ge 25%01",
-  "province": "Nineveh",
+  "province": "Basrah",
   "standard": "Apparent damage/production loss ge 25%"
  },
  {
   "climate_indicators": "Clear Damage to Crops, Pastures, or Date Palms",
   "docstatus": 0,
   "doctype": "Climate Indicators Subfields",
-  "modified": "2026-01-21 15:45:46.849690",
+  "modified": "2026-05-29 10:58:09.480802",
   "name": "Apparent damage/production loss ge 50%01",
-  "province": "Nineveh",
+  "province": "Basrah",
   "standard": "Apparent damage/production loss ge 50%"
  },
  {
   "climate_indicators": "Clear Damage to Crops, Pastures, or Date Palms",
   "docstatus": 0,
   "doctype": "Climate Indicators Subfields",
-  "modified": "2026-01-21 15:45:52.940249",
+  "modified": "2026-05-29 10:58:16.653174",
   "name": "No numerical estimates available01",
-  "province": "Nineveh",
+  "province": "Basrah",
   "standard": "No numerical estimates available"
  },
  {
