@@ -187,7 +187,7 @@ def _send_standingtech_otp(phone_number: str) -> Optional[str]:
     """
     url = "https://gateway.standingtech.com/api/v5/otp/send"
     headers = {
-        "Authorization": "Bearer 695|af51ce7f78a94e970ca905678656e593b17f676bbb970b591c3ae7c560d60f70 ",
+        "Authorization": "Bearer 695|af51ce7f78a94e970ca905678656e593b17f676bbb970b591c3ae7c560d60f70",
         "Content-Type": "application/json",
         "Accept": "application/json"
     }
@@ -482,5 +482,141 @@ def get_public_provinces() -> List[Dict[str, Any]]:
     except Exception as e:
         frappe.log_error(f"Error fetching provinces: {str(e)}")
         return []
+
+
+# ─────────────────────────────────────────────────
+# Forgot Password
+# ─────────────────────────────────────────────────
+
+def _store_reset_otp(email: str, otp: str, expiry_minutes: int = 10) -> None:
+    """Store forgot password OTP in cache with expiry time."""
+    cache_key = f"ews_pwd_reset_otp:{email}"
+    expiry_seconds = expiry_minutes * 60
+    frappe.cache.set_value(
+        cache_key,
+        {
+            "otp": otp,
+            "created_at": datetime.now().isoformat(),
+            "attempts": 0,
+        },
+        expires_in_sec=expiry_seconds,
+    )
+
+
+def _verify_reset_otp(email: str, otp: str) -> Dict[str, Any]:
+    """Verify forgot password OTP from cache."""
+    cache_key = f"ews_pwd_reset_otp:{email}"
+    stored = frappe.cache.get_value(cache_key)
+
+    if not stored:
+        return {"valid": False, "message": _("OTP has expired. Please request a new one.")}
+
+    attempts = stored.get("attempts", 0)
+    if attempts >= 5:
+        frappe.cache.delete_value(cache_key)
+        return {"valid": False, "message": _("Too many failed attempts. Please request a new OTP.")}
+
+    if stored["otp"] != otp:
+        stored["attempts"] = attempts + 1
+        frappe.cache.set_value(cache_key, stored, expires_in_sec=300)
+        remaining = 5 - stored["attempts"]
+        return {
+            "valid": False,
+            "message": _("Invalid OTP. {0} attempts remaining.").format(remaining),
+        }
+
+    frappe.cache.delete_value(cache_key)
+    return {"valid": True, "message": _("OTP verified successfully.")}
+
+
+@frappe.whitelist(allow_guest=True)
+def forgot_password_send_otp(email: str) -> Dict[str, Any]:
+    """
+    Send an OTP for password reset to the user's WhatsApp and/or Email.
+    """
+    try:
+        print(f"DEBUG [forgot_password_send_otp]: Start request for email: {email}")
+        if not email or not email.strip():
+            frappe.throw(_("Email is required"))
+
+        email = email.strip().lower()
+
+        user = frappe.db.get_value("User", email, ["name", "phone", "first_name"], as_dict=True)
+        print(f"DEBUG [forgot_password_send_otp]: Fetched user doc: {user}")
+        if not user:
+            frappe.throw(_("No account found with this email address."))
+
+        phone_number = user.phone
+        print(f"DEBUG [forgot_password_send_otp]: User phone number: {phone_number}")
+        if not phone_number or not phone_number.strip():
+            frappe.throw(_("No phone number registered for this account."))
+
+        print(f"DEBUG [forgot_password_send_otp]: Sending OTP to {phone_number} via StandingTech...")
+        otp_val = _send_standingtech_otp(phone_number)
+        print(f"DEBUG [forgot_password_send_otp]: StandingTech response OTP: {otp_val}")
+        if not otp_val:
+            frappe.throw(_("Failed to send verification code to your WhatsApp/phone. Please try again later."))
+
+        _store_reset_otp(email, otp_val, 10)
+        print(f"DEBUG [forgot_password_send_otp]: OTP stored in cache successfully for {email}")
+
+        masked_target = phone_number[:-4] + "****" if len(phone_number) > 4 else "WhatsApp"
+
+        return {
+            "status": "success",
+            "message": _("Verification code sent successfully to your WhatsApp/phone"),
+            "target": masked_target,
+            "expires_in_minutes": 10,
+        }
+
+    except frappe.ValidationError:
+        print("DEBUG [forgot_password_send_otp]: ValidationError raised")
+        raise
+    except Exception as e:
+        print(f"DEBUG [forgot_password_send_otp]: Exception occurred: {str(e)}")
+        frappe.log_error(f"Error sending forgot password OTP: {str(e)}", "Forgot Password OTP Error")
+        frappe.throw(_("Error sending verification code: {0}").format(str(e)))
+
+
+@frappe.whitelist(allow_guest=True)
+def forgot_password_reset(email: str, otp: str, new_password: str) -> Dict[str, Any]:
+    """
+    Verify the reset OTP and update the user's password.
+    """
+    try:
+        if not email or not email.strip():
+            frappe.throw(_("Email is required"))
+        if not otp or not otp.strip():
+            frappe.throw(_("OTP is required"))
+        if not new_password or len(new_password) < 6:
+            frappe.throw(_("Password must be at least 6 characters"))
+
+        email = email.strip().lower()
+
+        if not frappe.db.exists("User", email):
+            frappe.throw(_("No account found with this email address."))
+
+        verify_res = _verify_reset_otp(email, otp)
+        if not verify_res["valid"]:
+            frappe.throw(verify_res["message"])
+
+        user_doc = frappe.get_doc("User", email)
+        user_doc.new_password = new_password
+        if not user_doc.enabled:
+            user_doc.enabled = 1
+        user_doc.save(ignore_permissions=True)
+        frappe.db.commit()
+
+        return {
+            "status": "success",
+            "message": _("Password reset successfully! You can now log in."),
+        }
+
+    except frappe.ValidationError:
+        raise
+    except Exception as e:
+        frappe.log_error(f"Error resetting password: {str(e)}", "Forgot Password Reset Error")
+        frappe.throw(_("Error resetting password: {0}").format(str(e)))
+
 
 
