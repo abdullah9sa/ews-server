@@ -2,19 +2,19 @@
  {
   "docstatus": 0,
   "doctype": "Province",
-  "modified": "2026-01-21 14:59:47.200415",
-  "name": "Basrah",
-  "province": "Basrah",
-  "province_name_arabic": "البصرة",
+  "modified": "2026-01-21 14:59:34.052941",
+  "name": "Nineveh",
+  "province": "Nineveh",
+  "province_name_arabic": "نينوى",
   "role": null
  },
  {
   "docstatus": 0,
   "doctype": "Province",
-  "modified": "2026-01-21 14:59:34.052941",
-  "name": "Nineveh",
-  "province": "Nineveh",
-  "province_name_arabic": "نينوى",
+  "modified": "2026-01-21 14:59:47.200415",
+  "name": "Basrah",
+  "province": "Basrah",
+  "province_name_arabic": "البصرة",
   "role": null
  }
 ]
