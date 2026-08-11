@@ -15,6 +15,12 @@ class EWSDashboard {
 		this.filters = {};
 		this.data = {};
 
+		// All Reports table state
+		this.all_reports_page = 1;
+		this.all_reports_page_size = 20;
+		this.all_reports_filters = {};
+		this.all_reports_data = null;
+
 		this.setup_css();
 		this.make_filters();
 		this.make_layout();
@@ -520,6 +526,293 @@ class EWSDashboard {
 		.ews-link:hover {
 			text-decoration: underline;
 		}
+
+		/* ═══════════════════════════════════════════════
+		   ALL REPORTS SECTION
+		   ═══════════════════════════════════════════════ */
+		.ews-allreports-section {
+			margin-top: 8px;
+		}
+		.ews-allreports-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 16px;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+		.ews-allreports-title {
+			font-size: 20px;
+			font-weight: 800;
+			color: var(--ews-text);
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.ews-allreports-count {
+			background: var(--ews-primary);
+			color: #fff;
+			padding: 2px 10px;
+			border-radius: 99px;
+			font-size: 13px;
+			font-weight: 700;
+		}
+
+		/* Filter bar */
+		.ews-filter-bar {
+			background: var(--ews-card);
+			border: 1px solid var(--ews-border);
+			border-radius: var(--ews-radius);
+			padding: 16px 20px;
+			margin-bottom: 16px;
+			box-shadow: var(--ews-shadow);
+		}
+		.ews-filter-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+			gap: 12px;
+			align-items: end;
+		}
+		.ews-filter-group {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+		.ews-filter-group label {
+			font-size: 11px;
+			font-weight: 700;
+			color: var(--ews-text-muted);
+			text-transform: uppercase;
+			letter-spacing: .4px;
+		}
+		.ews-filter-group select,
+		.ews-filter-group input {
+			padding: 7px 10px;
+			border: 1px solid var(--ews-border);
+			border-radius: var(--ews-radius-sm);
+			font-size: 13px;
+			color: var(--ews-text);
+			background: #fff;
+			transition: border-color var(--ews-transition);
+			width: 100%;
+			box-sizing: border-box;
+		}
+		.ews-filter-group select:focus,
+		.ews-filter-group input:focus {
+			outline: none;
+			border-color: var(--ews-primary);
+			box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+		}
+		.ews-filter-actions {
+			display: flex;
+			gap: 8px;
+			margin-top: 12px;
+		}
+		.ews-btn {
+			padding: 8px 18px;
+			border: none;
+			border-radius: var(--ews-radius-sm);
+			font-size: 13px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all var(--ews-transition);
+		}
+		.ews-btn-primary {
+			background: var(--ews-primary);
+			color: #fff;
+		}
+		.ews-btn-primary:hover { background: #2563eb; }
+		.ews-btn-secondary {
+			background: #f1f5f9;
+			color: var(--ews-text);
+		}
+		.ews-btn-secondary:hover { background: #e2e8f0; }
+
+		/* Clickable table rows */
+		.ews-table.clickable-rows tbody tr {
+			cursor: pointer;
+			transition: background var(--ews-transition);
+		}
+		.ews-table.clickable-rows tbody tr:hover td {
+			background: #eef2ff;
+		}
+
+		/* Pagination */
+		.ews-pagination {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 14px 20px;
+			border-top: 1px solid var(--ews-border);
+			background: #f8fafc;
+			border-radius: 0 0 var(--ews-radius) var(--ews-radius);
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+		.ews-pagination-info {
+			font-size: 13px;
+			color: var(--ews-text-muted);
+		}
+		.ews-pagination-buttons {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+		}
+		.ews-page-btn {
+			padding: 6px 12px;
+			border: 1px solid var(--ews-border);
+			background: #fff;
+			border-radius: 6px;
+			font-size: 13px;
+			font-weight: 600;
+			color: var(--ews-text);
+			cursor: pointer;
+			transition: all var(--ews-transition);
+		}
+		.ews-page-btn:hover:not(:disabled) {
+			background: var(--ews-primary);
+			color: #fff;
+			border-color: var(--ews-primary);
+		}
+		.ews-page-btn.active {
+			background: var(--ews-primary);
+			color: #fff;
+			border-color: var(--ews-primary);
+		}
+		.ews-page-btn:disabled {
+			opacity: .4;
+			cursor: not-allowed;
+		}
+
+		/* ═══════════════════════════════════════════════
+		   DETAIL MODAL
+		   ═══════════════════════════════════════════════ */
+		.ews-modal-overlay {
+			position: fixed;
+			top: 0; left: 0; right: 0; bottom: 0;
+			background: rgba(0,0,0,.45);
+			z-index: 1050;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 24px;
+			animation: ews-fade-in .2s ease;
+		}
+		@keyframes ews-fade-in {
+			from { opacity: 0; }
+			to   { opacity: 1; }
+		}
+		.ews-modal {
+			background: var(--ews-card);
+			border-radius: 16px;
+			box-shadow: 0 20px 60px rgba(0,0,0,.2);
+			max-width: 720px;
+			width: 100%;
+			max-height: 85vh;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+			animation: ews-slide-up .25s ease;
+		}
+		@keyframes ews-slide-up {
+			from { opacity: 0; transform: translateY(20px); }
+			to   { opacity: 1; transform: translateY(0); }
+		}
+		.ews-modal-header {
+			padding: 20px 24px 16px;
+			border-bottom: 1px solid var(--ews-border);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.ews-modal-title {
+			font-size: 18px;
+			font-weight: 800;
+			color: var(--ews-text);
+		}
+		.ews-modal-close {
+			width: 36px;
+			height: 36px;
+			border: none;
+			background: #f1f5f9;
+			border-radius: 50%;
+			font-size: 18px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: var(--ews-text-muted);
+			transition: all var(--ews-transition);
+		}
+		.ews-modal-close:hover {
+			background: #fee2e2;
+			color: var(--ews-danger);
+		}
+		.ews-modal-body {
+			padding: 20px 24px 24px;
+			overflow-y: auto;
+		}
+		.ews-modal-loading {
+			padding: 48px;
+			text-align: center;
+			color: var(--ews-text-muted);
+			font-size: 14px;
+		}
+
+		/* Detail grid */
+		.ews-detail-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0;
+		}
+		@media (max-width: 560px) {
+			.ews-detail-grid { grid-template-columns: 1fr; }
+		}
+		.ews-detail-item {
+			padding: 10px 0;
+			border-bottom: 1px solid #f1f5f9;
+		}
+		.ews-detail-label {
+			font-size: 11px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: .4px;
+			color: var(--ews-text-muted);
+			margin-bottom: 3px;
+		}
+		.ews-detail-value {
+			font-size: 14px;
+			color: var(--ews-text);
+			font-weight: 500;
+			word-break: break-word;
+		}
+		.ews-detail-section-title {
+			grid-column: 1 / -1;
+			font-size: 14px;
+			font-weight: 800;
+			color: var(--ews-text);
+			padding: 16px 0 6px;
+			border-bottom: 2px solid var(--ews-border);
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+		.ews-detail-full {
+			grid-column: 1 / -1;
+		}
+		.ews-detail-actions {
+			grid-column: 1 / -1;
+			padding-top: 16px;
+			display: flex;
+			gap: 10px;
+		}
+		.ews-detail-img {
+			max-width: 100%;
+			max-height: 200px;
+			border-radius: var(--ews-radius-sm);
+			object-fit: cover;
+			border: 1px solid var(--ews-border);
+		}
 		`;
 		document.head.appendChild(style);
 	}
@@ -665,12 +958,13 @@ class EWSDashboard {
 		html += this.render_panel("🗺️ Province × Severity Heatmap", this.render_heatmap(d.province_severity, d.province_breakdown), "indigo");
 		html += "</div>";
 
-		// 8. Recent reports table
-		html += '<div class="ews-grid">';
-		html += this.render_panel("📋 Recent Reports", this.render_recent_table(d.recent_reports), "blue");
-		html += "</div>";
+		// 8. All Reports section placeholder
+		html += '<div id="ews-all-reports-section" class="ews-allreports-section"></div>';
 
 		this.$container.html(html);
+
+		// Load the all-reports table independently
+		this.load_all_reports();
 	}
 
 	/* ═══════════════════════════════════════════
@@ -985,5 +1279,424 @@ class EWSDashboard {
 	}
 	get_conflict_colors() {
 		return ["#ef4444", "#f87171", "#fca5a5", "#fecaca", "#dc2626", "#b91c1c"];
+	}
+
+	/* ═══════════════════════════════════════════════════════════
+	   ALL REPORTS – FULL TABLE WITH FILTERS & PAGINATION
+	   ═══════════════════════════════════════════════════════════ */
+
+	load_all_reports() {
+		const section = this.$container.find("#ews-all-reports-section");
+		section.html(`
+			<div class="ews-panel" style="border:none;box-shadow:none;background:transparent">
+				<div class="ews-panel-body" style="padding:0">
+					<div class="ews-skeleton" style="height:300px;width:100%"></div>
+				</div>
+			</div>
+		`);
+
+		const args = {
+			page: this.all_reports_page,
+			page_size: this.all_reports_page_size,
+			...this.all_reports_filters,
+		};
+
+		frappe.xcall("ews.ews.page.ews_dashboard.ews_dashboard.get_all_reports", args).then(
+			(data) => {
+				this.all_reports_data = data;
+				this.render_all_reports_section(data);
+			},
+			() => {
+				section.html(this.empty_state("Error loading reports"));
+			}
+		);
+	}
+
+	render_all_reports_section(d) {
+		const section = this.$container.find("#ews-all-reports-section");
+		let html = "";
+
+		// Header
+		html += `
+		<div class="ews-allreports-header">
+			<div class="ews-allreports-title">
+				📋 ${__("All Reports")}
+				<span class="ews-allreports-count">${this.format_number(d.total)}</span>
+			</div>
+		</div>`;
+
+		// Filter bar
+		html += this.render_all_reports_filters(d);
+
+		// Table
+		html += '<div class="ews-panel">';
+		html += this.render_all_reports_table(d.reports);
+		html += this.render_pagination(d);
+		html += '</div>';
+
+		section.html(html);
+
+		// Wire events
+		this.bind_all_reports_events();
+	}
+
+	render_all_reports_filters(d) {
+		const f = this.all_reports_filters;
+
+		const _opts = (list, selected) => {
+			let h = '<option value="">All</option>';
+			(list || []).forEach((v) => {
+				h += `<option value="${frappe.utils.escape_html(v)}" ${v === selected ? 'selected' : ''}>${frappe.utils.escape_html(v)}</option>`;
+			});
+			return h;
+		};
+
+		return `
+		<div class="ews-filter-bar">
+			<div class="ews-filter-grid">
+				<div class="ews-filter-group">
+					<label>${__("Search")}</label>
+					<input type="text" id="ews-ar-search" placeholder="${__("Search reports...")}" value="${frappe.utils.escape_html(f.search || '')}">
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("Province")}</label>
+					<select id="ews-ar-province">${_opts(d.provinces_list, f.province)}</select>
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("Severity")}</label>
+					<select id="ews-ar-severity">${_opts(d.severity_options, f.severity)}</select>
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("Report Type")}</label>
+					<select id="ews-ar-report_type">${_opts(d.report_type_options, f.report_type)}</select>
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("Timing")}</label>
+					<select id="ews-ar-report_timing">${_opts(d.timing_options, f.report_timing)}</select>
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("Frequency")}</label>
+					<select id="ews-ar-frequency">${_opts(d.frequency_options, f.frequency)}</select>
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("Observer")}</label>
+					<select id="ews-ar-observer">${_opts(d.observers_list, f.observer)}</select>
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("Admin Site")}</label>
+					<select id="ews-ar-admin_site">${_opts(d.admin_sites_list, f.administrative_site)}</select>
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("District")}</label>
+					<select id="ews-ar-district">${_opts(d.districts_list, f.district)}</select>
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("Climate Indicator")}</label>
+					<select id="ews-ar-climate">${_opts(d.climate_list, f.climate_indicators)}</select>
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("Conflict Indicator")}</label>
+					<select id="ews-ar-conflict">${_opts(d.conflict_list, f.conflict_indicators)}</select>
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("From Date")}</label>
+					<input type="date" id="ews-ar-from_date" value="${f.from_date || ''}">
+				</div>
+				<div class="ews-filter-group">
+					<label>${__("To Date")}</label>
+					<input type="date" id="ews-ar-to_date" value="${f.to_date || ''}">
+				</div>
+			</div>
+			<div class="ews-filter-actions">
+				<button class="ews-btn ews-btn-primary" id="ews-ar-apply">
+					🔍 ${__("Apply Filters")}
+				</button>
+				<button class="ews-btn ews-btn-secondary" id="ews-ar-clear">
+					✕ ${__("Clear")}
+				</button>
+			</div>
+		</div>`;
+	}
+
+	render_all_reports_table(reports) {
+		if (!reports || !reports.length) {
+			return `<div class="ews-panel-body">${this.empty_state("No reports match the current filters")}</div>`;
+		}
+
+		let html = '<div class="ews-table-wrap"><table class="ews-table clickable-rows" id="ews-ar-table"><thead><tr>';
+		html += `<th>${__("Report")}</th>`;
+		html += `<th>${__("Observer")}</th>`;
+		html += `<th>${__("Province")}</th>`;
+		html += `<th>${__("Admin Site")}</th>`;
+		html += `<th>${__("District")}</th>`;
+		html += `<th>${__("Type")}</th>`;
+		html += `<th>${__("Severity")}</th>`;
+		html += `<th>${__("Timing")}</th>`;
+		html += `<th>${__("Frequency")}</th>`;
+		html += `<th>${__("Date")}</th>`;
+		html += "</tr></thead><tbody>";
+
+		for (const r of reports) {
+			const sevClass = (r.severity || "").toLowerCase();
+			const typeClass = (r.report_type || "").includes("Climate") ? "climate" : "conflict";
+			html += `<tr data-report="${frappe.utils.escape_html(r.name)}">
+				<td><span class="ews-link">${frappe.utils.escape_html(r.name)}</span></td>
+				<td>${frappe.utils.escape_html(r.observer_name || r.observer || "")}</td>
+				<td>${frappe.utils.escape_html(r.province || "")}</td>
+				<td>${frappe.utils.escape_html(r.administrative_site || "")}</td>
+				<td>${frappe.utils.escape_html(r.district || "")}</td>
+				<td><span class="ews-badge ${typeClass}">${frappe.utils.escape_html(this._short_type(r.report_type))}</span></td>
+				<td><span class="ews-badge ${sevClass}">${frappe.utils.escape_html(r.severity || "N/A")}</span></td>
+				<td>${frappe.utils.escape_html(this._short_timing(r.report_timing))}</td>
+				<td>${frappe.utils.escape_html(this._short_freq(r.frequency))}</td>
+				<td style="white-space:nowrap">${r.creation ? frappe.datetime.str_to_user(r.creation) : ""}</td>
+			</tr>`;
+		}
+		html += "</tbody></table></div>";
+		return html;
+	}
+
+	_short_type(t) {
+		if (!t) return "N/A";
+		return t.includes("Climate") ? "Climate" : "Conflict";
+	}
+	_short_timing(t) {
+		if (!t) return "";
+		return t.includes("Ongoing") ? "Ongoing" : "Forecasted";
+	}
+	_short_freq(f) {
+		if (!f) return "";
+		if (f.includes("Rare")) return "Rare";
+		if (f.includes("Occasionally")) return "Occasional";
+		return "Constant";
+	}
+
+	render_pagination(d) {
+		const { page, total_pages, total, page_size } = d;
+		const from = ((page - 1) * page_size) + 1;
+		const to = Math.min(page * page_size, total);
+
+		let btns = "";
+		btns += `<button class="ews-page-btn" data-page="1" ${page === 1 ? 'disabled' : ''}>«</button>`;
+		btns += `<button class="ews-page-btn" data-page="${page - 1}" ${page === 1 ? 'disabled' : ''}>‹</button>`;
+
+		// Show up to 5 page numbers around current
+		let start = Math.max(1, page - 2);
+		let end = Math.min(total_pages, page + 2);
+		if (start > 1) btns += `<span style="padding:0 4px;color:var(--ews-text-muted)">…</span>`;
+		for (let p = start; p <= end; p++) {
+			btns += `<button class="ews-page-btn ${p === page ? 'active' : ''}" data-page="${p}">${p}</button>`;
+		}
+		if (end < total_pages) btns += `<span style="padding:0 4px;color:var(--ews-text-muted)">…</span>`;
+
+		btns += `<button class="ews-page-btn" data-page="${page + 1}" ${page === total_pages ? 'disabled' : ''}>›</button>`;
+		btns += `<button class="ews-page-btn" data-page="${total_pages}" ${page === total_pages ? 'disabled' : ''}>»</button>`;
+
+		return `
+		<div class="ews-pagination">
+			<div class="ews-pagination-info">
+				${__("Showing")} <strong>${from}–${to}</strong> ${__("of")} <strong>${this.format_number(total)}</strong> ${__("reports")}
+			</div>
+			<div class="ews-pagination-buttons">${btns}</div>
+		</div>`;
+	}
+
+	bind_all_reports_events() {
+		const self = this;
+
+		// Apply filters
+		this.$container.find("#ews-ar-apply").on("click", () => {
+			self.all_reports_filters = self._collect_ar_filters();
+			self.all_reports_page = 1;
+			self.load_all_reports();
+		});
+
+		// Clear filters
+		this.$container.find("#ews-ar-clear").on("click", () => {
+			self.all_reports_filters = {};
+			self.all_reports_page = 1;
+			self.load_all_reports();
+		});
+
+		// Search on Enter
+		this.$container.find("#ews-ar-search").on("keydown", (e) => {
+			if (e.key === "Enter") {
+				self.all_reports_filters = self._collect_ar_filters();
+				self.all_reports_page = 1;
+				self.load_all_reports();
+			}
+		});
+
+		// Pagination
+		this.$container.find(".ews-page-btn").on("click", function () {
+			const p = parseInt($(this).data("page"));
+			if (p && p !== self.all_reports_page) {
+				self.all_reports_page = p;
+				self.load_all_reports();
+				// Scroll to all-reports section
+				self.$container.find("#ews-all-reports-section")[0]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}
+		});
+
+		// Row click → detail popup
+		this.$container.find("#ews-ar-table tbody tr").on("click", function () {
+			const reportName = $(this).data("report");
+			if (reportName) self.show_report_detail(reportName);
+		});
+	}
+
+	_collect_ar_filters() {
+		return {
+			search: this.$container.find("#ews-ar-search").val() || "",
+			province: this.$container.find("#ews-ar-province").val() || "",
+			severity: this.$container.find("#ews-ar-severity").val() || "",
+			report_type: this.$container.find("#ews-ar-report_type").val() || "",
+			report_timing: this.$container.find("#ews-ar-report_timing").val() || "",
+			frequency: this.$container.find("#ews-ar-frequency").val() || "",
+			observer: this.$container.find("#ews-ar-observer").val() || "",
+			administrative_site: this.$container.find("#ews-ar-admin_site").val() || "",
+			district: this.$container.find("#ews-ar-district").val() || "",
+			climate_indicators: this.$container.find("#ews-ar-climate").val() || "",
+			conflict_indicators: this.$container.find("#ews-ar-conflict").val() || "",
+			from_date: this.$container.find("#ews-ar-from_date").val() || "",
+			to_date: this.$container.find("#ews-ar-to_date").val() || "",
+		};
+	}
+
+	/* ═══════════════════════════════════════════════════════════
+	   REPORT DETAIL POPUP
+	   ═══════════════════════════════════════════════════════════ */
+
+	show_report_detail(reportName) {
+		// Create overlay
+		const $overlay = $(`
+			<div class="ews-modal-overlay" id="ews-detail-modal">
+				<div class="ews-modal">
+					<div class="ews-modal-header">
+						<div class="ews-modal-title">📄 ${frappe.utils.escape_html(reportName)}</div>
+						<button class="ews-modal-close" id="ews-modal-close">✕</button>
+					</div>
+					<div class="ews-modal-body">
+						<div class="ews-modal-loading">
+							<div class="ews-skeleton" style="height:200px;width:100%"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		`);
+
+		$("body").append($overlay);
+
+		// Close handlers
+		const close = () => $overlay.remove();
+		$overlay.find("#ews-modal-close").on("click", close);
+		$overlay.on("click", (e) => {
+			if ($(e.target).hasClass("ews-modal-overlay")) close();
+		});
+		$(document).one("keydown.ews-modal", (e) => {
+			if (e.key === "Escape") close();
+		});
+
+		// Fetch detail
+		frappe.xcall("ews.ews.page.ews_dashboard.ews_dashboard.get_report_detail", {
+			report_name: reportName,
+		}).then(
+			(r) => {
+				$overlay.find(".ews-modal-body").html(this.render_report_detail(r));
+			},
+			() => {
+				$overlay.find(".ews-modal-body").html(
+					`<div class="ews-empty">Error loading report details</div>`
+				);
+			}
+		);
+	}
+
+	render_report_detail(r) {
+		const sevClass = (r.severity || "").toLowerCase();
+		const typeClass = (r.report_type || "").includes("Climate") ? "climate" : "conflict";
+
+		const _row = (label, value, opts = {}) => {
+			if (!value && !opts.showEmpty) return "";
+			const cls = opts.full ? "ews-detail-item ews-detail-full" : "ews-detail-item";
+			const valHtml = opts.badge
+				? `<span class="ews-badge ${opts.badgeClass || ''}">${frappe.utils.escape_html(value || 'N/A')}</span>`
+				: `<div class="ews-detail-value">${frappe.utils.escape_html(value || '—')}</div>`;
+			return `<div class="${cls}"><div class="ews-detail-label">${label}</div>${valHtml}</div>`;
+		};
+
+		const _section = (icon, title) => {
+			return `<div class="ews-detail-section-title">${icon} ${title}</div>`;
+		};
+
+		let html = '<div class="ews-detail-grid">';
+
+		// ── Location Info ──
+		html += _section("📍", __("Location Information"));
+		html += _row(__("Observer"), r.observer_name || r.observer);
+		html += _row(__("Province"), r.province);
+		html += _row(__("Administrative Site"), r.administrative_site);
+		html += _row(__("District"), r.district);
+		html += _row(__("Latitude"), r.latitude ? String(r.latitude) : null);
+		html += _row(__("Longitude"), r.longitude ? String(r.longitude) : null);
+		html += _row(__("Altitude"), r.altitude ? String(r.altitude) : null);
+		html += _row(__("Accuracy"), r.accuracy ? String(r.accuracy) : null);
+
+		// ── Incident Information ──
+		html += _section("⚡", __("Incident Information"));
+		html += _row(__("Report Type"), r.report_type, { badge: true, badgeClass: typeClass });
+		html += _row(__("Severity"), r.severity, { badge: true, badgeClass: sevClass });
+		html += _row(__("AI Severity"), r.ai_severity, { badge: true, badgeClass: (r.ai_severity || "").toLowerCase() });
+		html += _row(__("Report Timing"), r.report_timing);
+		html += _row(__("Frequency"), r.frequency);
+
+		if (r.report_type && r.report_type.includes("Climate")) {
+			html += _row(__("Climate Indicator"), r.climate_indicators);
+			html += _row(__("Climate Standard"), r.standard_label || r.standard);
+			html += _row(__("Affected Groups"), r.affected_groups);
+		} else if (r.report_type && r.report_type.includes("Conflict")) {
+			html += _row(__("Conflict Indicator"), r.conflict_indicators);
+			html += _row(__("Conflict Threshold"), r.conflict_threshold_label || r.conflict_threshold);
+			html += _row(__("Participated Groups"), r.participated_groups);
+		}
+		html += _row(__("Most Affected Groups"), r.most_affected_groups);
+
+		// ── Extra Details ──
+		if (r.extra_details) {
+			html += _section("📝", __("Extra Details"));
+			html += `<div class="ews-detail-item ews-detail-full">
+				<div class="ews-detail-value" style="white-space:pre-wrap;background:#f8fafc;padding:12px;border-radius:8px;font-size:13px">${frappe.utils.escape_html(r.extra_details)}</div>
+			</div>`;
+		}
+
+		// ── Attachments ──
+		if (r.image || r.image_2 || r.audio) {
+			html += _section("📎", __("Attachments"));
+			if (r.image) {
+				html += `<div class="ews-detail-item"><div class="ews-detail-label">${__("Image 1")}</div><img class="ews-detail-img" src="${r.image}" alt="Image 1"></div>`;
+			}
+			if (r.image_2) {
+				html += `<div class="ews-detail-item"><div class="ews-detail-label">${__("Image 2")}</div><img class="ews-detail-img" src="${r.image_2}" alt="Image 2"></div>`;
+			}
+			if (r.audio) {
+				html += `<div class="ews-detail-item ews-detail-full"><div class="ews-detail-label">${__("Audio")}</div><audio controls src="${r.audio}" style="width:100%;margin-top:4px"></audio></div>`;
+			}
+		}
+
+		// ── Metadata ──
+		html += _section("🕐", __("Metadata"));
+		html += _row(__("Created"), r.creation ? frappe.datetime.str_to_user(r.creation) : null);
+		html += _row(__("Timestamp"), r.timestamp ? frappe.datetime.str_to_user(r.timestamp) : null);
+		html += _row(__("Report ID"), r.name);
+
+		// ── Actions ──
+		html += `<div class="ews-detail-actions">
+			<a class="ews-btn ews-btn-primary" href="/app/ews-report/${r.name}" target="_blank">
+				↗ ${__("Open Full Report")}
+			</a>
+		</div>`;
+
+		html += "</div>";
+		return html;
 	}
 }

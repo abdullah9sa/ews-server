@@ -347,3 +347,220 @@ def _filters_to_sql(filters):
 
     where = "WHERE " + " AND ".join(clauses) if clauses else ""
     return where, values
+
+
+@frappe.whitelist()
+def get_all_reports(
+    from_date=None,
+    to_date=None,
+    province=None,
+    severity=None,
+    report_type=None,
+    report_timing=None,
+    frequency=None,
+    observer=None,
+    administrative_site=None,
+    district=None,
+    climate_indicators=None,
+    conflict_indicators=None,
+    search=None,
+    page=1,
+    page_size=20,
+    sort_field="creation",
+    sort_order="DESC",
+):
+    """
+    Paginated reports endpoint with specialized filters for the All Reports table.
+    Returns reports list + total count + filter option lists.
+    """
+    page = max(1, int(page))
+    page_size = min(100, max(5, int(page_size)))
+    offset = (page - 1) * page_size
+
+    # Validate sort
+    allowed_sort_fields = {
+        "creation", "timestamp", "severity", "province",
+        "report_type", "observer", "administrative_site",
+    }
+    if sort_field not in allowed_sort_fields:
+        sort_field = "creation"
+    if sort_order.upper() not in ("ASC", "DESC"):
+        sort_order = "DESC"
+
+    # Build WHERE clauses
+    clauses = []
+    values = {}
+    idx = 0
+
+    def _add(field, op, val):
+        nonlocal idx
+        clauses.append(f"`tabEWS Report`.`{field}` {op} %(_f{idx})s")
+        values[f"_f{idx}"] = val
+        idx += 1
+
+    if from_date and to_date:
+        clauses.append(f"`tabEWS Report`.`creation` BETWEEN %(_f{idx}a)s AND %(_f{idx}b)s")
+        values[f"_f{idx}a"] = from_date
+        values[f"_f{idx}b"] = add_days(getdate(to_date), 1)
+        idx += 1
+    elif from_date:
+        _add("creation", ">=", from_date)
+    elif to_date:
+        _add("creation", "<=", add_days(getdate(to_date), 1))
+
+    if province:
+        _add("province", "=", province)
+    if severity:
+        _add("severity", "=", severity)
+    if report_type:
+        _add("report_type", "=", report_type)
+    if report_timing:
+        _add("report_timing", "=", report_timing)
+    if frequency:
+        _add("frequency", "=", frequency)
+    if observer:
+        _add("observer", "=", observer)
+    if administrative_site:
+        _add("administrative_site", "=", administrative_site)
+    if district:
+        _add("district", "=", district)
+    if climate_indicators:
+        _add("climate_indicators", "=", climate_indicators)
+    if conflict_indicators:
+        _add("conflict_indicators", "=", conflict_indicators)
+    if search:
+        search_val = f"%{search}%"
+        clauses.append(
+            f"(`tabEWS Report`.`name` LIKE %(_fs)s "
+            f"OR `tabEWS Report`.`observer` LIKE %(_fs)s "
+            f"OR `tabEWS Report`.`province` LIKE %(_fs)s "
+            f"OR `tabEWS Report`.`district` LIKE %(_fs)s "
+            f"OR `tabEWS Report`.`administrative_site` LIKE %(_fs)s "
+            f"OR `tabEWS Report`.`extra_details` LIKE %(_fs)s)"
+        )
+        values["_fs"] = search_val
+
+    where = "WHERE " + " AND ".join(clauses) if clauses else ""
+
+    # Count
+    total = frappe.db.sql(
+        f"SELECT COUNT(*) as cnt FROM `tabEWS Report` {where}",
+        values,
+        as_dict=True,
+    )[0].cnt or 0
+
+    # Fetch page
+    reports = frappe.db.sql(
+        f"""
+        SELECT
+            name, observer, province, administrative_site, district,
+            severity, ai_severity, report_type, report_timing, frequency,
+            climate_indicators, conflict_indicators,
+            standard, conflict_threshold,
+            affected_groups, participated_groups, most_affected_groups,
+            extra_details, creation, timestamp
+        FROM `tabEWS Report`
+        {where}
+        ORDER BY `tabEWS Report`.`{sort_field}` {sort_order}
+        LIMIT %(limit)s OFFSET %(offset)s
+        """,
+        {**values, "limit": page_size, "offset": offset},
+        as_dict=True,
+    )
+
+    # Resolve observer names
+    for r in reports:
+        r["observer_name"] = (
+            frappe.db.get_value("User", r["observer"], "full_name") or r["observer"]
+        )
+
+    # Filter option lists for the inline filter controls
+    observers_list = frappe.db.sql(
+        "SELECT DISTINCT observer FROM `tabEWS Report` WHERE observer IS NOT NULL ORDER BY observer",
+        as_dict=False,
+    )
+    observers_list = [row[0] for row in observers_list]
+
+    admin_sites_list = frappe.db.sql(
+        "SELECT DISTINCT administrative_site FROM `tabEWS Report` WHERE administrative_site IS NOT NULL AND administrative_site != '' ORDER BY administrative_site",
+        as_dict=False,
+    )
+    admin_sites_list = [row[0] for row in admin_sites_list]
+
+    districts_list = frappe.db.sql(
+        "SELECT DISTINCT district FROM `tabEWS Report` WHERE district IS NOT NULL AND district != '' ORDER BY district",
+        as_dict=False,
+    )
+    districts_list = [row[0] for row in districts_list]
+
+    climate_list = frappe.db.sql(
+        "SELECT DISTINCT climate_indicators FROM `tabEWS Report` WHERE climate_indicators IS NOT NULL AND climate_indicators != '' ORDER BY climate_indicators",
+        as_dict=False,
+    )
+    climate_list = [row[0] for row in climate_list]
+
+    conflict_list = frappe.db.sql(
+        "SELECT DISTINCT conflict_indicators FROM `tabEWS Report` WHERE conflict_indicators IS NOT NULL AND conflict_indicators != '' ORDER BY conflict_indicators",
+        as_dict=False,
+    )
+    conflict_list = [row[0] for row in conflict_list]
+
+    return {
+        "reports": reports,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": max(1, -(-total // page_size)),  # ceil division
+        # filter options
+        "provinces_list": frappe.db.get_list("Province", pluck="name", order_by="name asc"),
+        "severity_options": ["Critical", "High", "Moderate", "Low"],
+        "report_type_options": ["Climate / Water / Environment", "Conflict / Social Tension"],
+        "timing_options": ["Ongoing / Current Incident", "Expected / Forecasted"],
+        "frequency_options": ["Rare/First Time", "Occasionally Frequent", "Constantly Frequent or Almost Daily"],
+        "observers_list": observers_list,
+        "admin_sites_list": admin_sites_list,
+        "districts_list": districts_list,
+        "climate_list": climate_list,
+        "conflict_list": conflict_list,
+    }
+
+
+@frappe.whitelist()
+def get_report_detail(report_name):
+    """
+    Get full details of a single EWS Report for the detail popup.
+    Resolves all linked field names.
+    """
+    if not report_name:
+        frappe.throw("Report name is required")
+
+    report = frappe.db.sql(
+        """
+        SELECT *
+        FROM `tabEWS Report`
+        WHERE name = %(name)s
+        LIMIT 1
+        """,
+        {"name": report_name},
+        as_dict=True,
+    )
+
+    if not report:
+        frappe.throw(f"Report {report_name} not found")
+
+    r = report[0]
+
+    # Resolve names
+    r["observer_name"] = frappe.db.get_value("User", r.get("observer"), "full_name") or r.get("observer", "")
+
+    # Resolve subfield display values
+    if r.get("standard"):
+        r["standard_label"] = frappe.db.get_value(
+            "Climate Indicators Subfields", r["standard"], "standard"
+        ) or r["standard"]
+    if r.get("conflict_threshold"):
+        r["conflict_threshold_label"] = frappe.db.get_value(
+            "Conflict Sub-fields", r["conflict_threshold"], "threshold"
+        ) or r["conflict_threshold"]
+
+    return r
